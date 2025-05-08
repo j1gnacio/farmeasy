@@ -8,6 +8,7 @@ public class Usuario {
     private static final Scanner sc = new Scanner(System.in);
     private static final List<Usuario> usuarios = new ArrayList<>(); // "Base de datos" en memoria
 
+
     private String id;
     private String nombre;
     private String email;
