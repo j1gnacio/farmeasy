@@ -1,0 +1,3 @@
+Aqui dejo algunas imagenes que he sacado al javadoc, no son todas las clases porque serian
+muchas fotos pero las demas estan dentro del documento index.html donde se pueden
+ver todas las clases y los metodos detalladamente.
