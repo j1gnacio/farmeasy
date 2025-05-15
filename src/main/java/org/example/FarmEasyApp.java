@@ -29,7 +29,7 @@ public class FarmEasyApp {
         String descripcion = doc.getString("descripcion");
         String precioNormal = doc.getString("precio_farmacia");
         String precioInternet = doc.getString("precio_internet");
-        String url = doc.getString("url");
+        String url = doc.getString("url_producto");
         String farmacia = doc.getString("farmacia");
 
         return new Medicamento(id, nombre, dosis, descripcion, precioNormal, precioInternet, url, farmacia);
