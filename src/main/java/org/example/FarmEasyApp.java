@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FarmEasyApp {
-    private static final String CONNECTION_STRING = "mongodb+srv://cgallegos09:12345@farmeasyscraping.1tfolzx.mongodb.net/?retryWrites=true&w=majority";
+    private static final String CONNECTION_STRING = "mongodb+srv://cgallegos09:12345@farmeasyscraping.k4cs9kw.mongodb.net/?retryWrites=true&w=majority&appName=FarmEasyScraping";
     private static final String DB_NAME = "farmeasyscraping";
     private static final String COLLECTION_NAME = "medicamentos";
 
@@ -48,16 +48,23 @@ public class FarmEasyApp {
     }
 
     public void buscarPorNombre(String nombre) {
-        Document doc = collection.find(Filters.eq("nombre", nombre)).first();
-        if (doc == null) {
-            System.out.println("No se encontró medicamento con nombre: " + nombre);
-        } else {
+        // Búsqueda insensible a mayúsculas/minúsculas y parcial
+        FindIterable<Document> docs = collection.find(Filters.regex("nombre", ".*" + nombre + ".*", "i"));
+
+        boolean encontrado = false;
+        for (Document doc : docs) {
             Medicamento med = documentToMedicamento(doc);
-            System.out.println("Detalles del medicamento:");
+            System.out.println("--------------------------------");
             med.obtenerDetalles();
             System.out.println("--------------------------------");
+            encontrado = true;
+        }
+
+        if (!encontrado) {
+            System.out.println("No se encontraron medicamentos que coincidan con: " + nombre);
         }
     }
+
 
     public void cerrar() {
         mongoClient.close();
