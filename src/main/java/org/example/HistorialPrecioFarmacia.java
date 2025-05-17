@@ -3,13 +3,19 @@ package org.example;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID; // Importar para generar un ID único
+import java.util.logging.Logger;
 
 public class HistorialPrecioFarmacia {
-    private String idHistorial;
+    private static final Logger logger = Logger.getLogger(HistorialPrecioFarmacia.class.getName());
+
+    private String idHistorial; // ID único para el historial
     private List<RegistroPrecio> historialPrecios = new ArrayList<>();
 
     // Clase interna para guardar el precio en una fecha específica
     public static class RegistroPrecio {
+        private static final Logger logger = Logger.getLogger(RegistroPrecio.class.getName());
+
         private PrecioFarmacia precioFarmacia;
         private LocalDateTime fecha;
 
@@ -19,21 +25,24 @@ public class HistorialPrecioFarmacia {
         }
 
         public void mostrarRegistro() {
-            System.out.println("Fecha: " + fecha);
+            logger.info("Fecha: " + fecha);
             precioFarmacia.obtenerPrecio();
         }
+    }
+
+    // Constructor donde se asigna el ID único
+    public HistorialPrecioFarmacia() {
+        this.idHistorial = UUID.randomUUID().toString(); // Generar un ID único
     }
 
     public void guardarPrecio(PrecioFarmacia precioActual) {
         RegistroPrecio nuevoRegistro = new RegistroPrecio(precioActual, LocalDateTime.now());
         historialPrecios.add(nuevoRegistro);
-        System.out.println("Precio guardado en historial.");
+        logger.info("Precio guardado en historial.");
     }
-
-    public HistorialPrecioFarmacia() {}
-
+    
     public void mostrarHistorial() {
-        System.out.println("Historial de precios:");
+        logger.info("Historial de precios (ID: " + idHistorial + "):");
         for (RegistroPrecio registro : historialPrecios) {
             registro.mostrarRegistro();
         }
@@ -42,5 +51,8 @@ public class HistorialPrecioFarmacia {
     public List<RegistroPrecio> getHistorialPrecios() {
         return historialPrecios;
     }
-}
 
+    public String getIdHistorial() { // Método getter para idHistorial
+        return idHistorial;
+    }
+}

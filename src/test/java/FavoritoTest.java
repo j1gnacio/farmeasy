@@ -4,10 +4,10 @@ import org.example.Usuario;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FavoritoTest {
+class FavoritoTest {
 
     @Test
-    public void testAgregarFavorito() {
+    void testAgregarFavorito() {
         Usuario usuario = new Usuario("Luis");
         Medicamento medicamento = new Medicamento("Omeprazol");
         Favorito favorito = new Favorito(usuario, medicamento);
@@ -18,7 +18,7 @@ public class FavoritoTest {
     }
 
     @Test
-    public void testEliminarFavorito() {
+    void testEliminarFavorito() {
         Usuario usuario = new Usuario("Marta");
         Medicamento medicamento = new Medicamento("Amoxicilina");
         Favorito favorito = new Favorito(usuario, medicamento);

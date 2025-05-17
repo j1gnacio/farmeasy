@@ -3,8 +3,11 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class Usuario {
+    private static final Logger logger = Logger.getLogger(Usuario.class.getName());
     private static final Scanner sc = new Scanner(System.in);
     private static final List<Usuario> usuarios = new ArrayList<>(); // "Base de datos" en memoria
 
@@ -13,6 +16,7 @@ public class Usuario {
     private String nombre;
     private String email;
     private String contrasenia;
+    
     private boolean sesionIniciada = false;
     private List<Favorito> favoritos;
     private List<AlertaPrecio> alertas;
@@ -31,70 +35,70 @@ public class Usuario {
     }
 
     public void iniciarSesion(){
-        System.out.print("Ingrese email: ");
+        logger.info("Ingrese email: ");
         String correo = sc.nextLine();
-        System.out.print("Ingrese contraseña: ");
+        logger.info("Ingrese contraseña: ");
         String clave = sc.nextLine();
 
         for (Usuario u : usuarios) {
             if (u.email.equals(correo) && u.contrasenia.equals(clave)) {
                 u.sesionIniciada = true;
-                System.out.println("Inicio de sesión exitoso. ¡Bienvenido, " + u.nombre + "!");
+                logger.info("Inicio de sesión exitoso. ¡Bienvenido, " + u.nombre + "!");
                 return;
             }
         }
-        System.out.println("Correo o contraseña incorrectos.");
+        logger.info("Correo o contraseña incorrectos.");
     }
     public void registrarUsuario(){
-        System.out.print("Ingrese su nombre: ");
+        logger.info("Ingrese su nombre: ");
         String nombre = sc.nextLine();
-        System.out.print("Ingrese su email: ");
+        logger.info("Ingrese su email: ");
         String correo = sc.nextLine();
-        System.out.print("Cree una contraseña: ");
+        logger.info("Cree una contraseña: ");
         String clave = sc.nextLine();
 
         // Validar si el usuario ya existe
         for (Usuario u : usuarios) {
             if (u.email.equals(correo)) {
-                System.out.println("Este correo ya está registrado.");
+                logger.info("Este correo ya está registrado.");
                 return;
             }
         }
 
         Usuario nuevo = new Usuario(nombre, correo, clave);
         usuarios.add(nuevo);
-        System.out.println("Usuario registrado exitosamente.");
+        logger.info("Usuario registrado exitosamente.");
     }
     public void cambiarContrasenia(){
-        System.out.print("Ingrese su email: ");
+        logger.info("Ingrese su email: ");
         String correo = sc.nextLine();
-        System.out.print("Ingrese su contraseña actual: ");
+        logger.info("Ingrese su contraseña actual: ");
         String clave = sc.nextLine();
 
         for (Usuario u : usuarios) {
             if (u.email.equals(correo) && u.contrasenia.equals(clave)) {
-                System.out.print("Ingrese nueva contraseña: ");
+                logger.info("Ingrese nueva contraseña: ");
                 String nuevaClave = sc.nextLine();
                 u.contrasenia = nuevaClave;
-                System.out.println("Contraseña actualizada con éxito.");
+                logger.info("Contraseña actualizada con éxito.");
                 return;
             }
         }
-        System.out.println("Credenciales incorrectas.");
+        logger.info("Credenciales incorrectas.");
     }
     public void cerrarSesion(){
         if (this.sesionIniciada) {
             this.sesionIniciada = false;
-            System.out.println("Sesión cerrada con éxito.");
+            logger.info("Sesión cerrada con éxito.");
         } else {
-            System.out.println("No hay sesión activa.");
+            logger.info("No hay sesión activa.");
         }
     }
     // Método auxiliar para pruebas (no obligatorio)
     public static void mostrarUsuariosRegistrados() {
-        System.out.println("Usuarios registrados:");
+        logger.info("Usuarios registrados:");
         for (Usuario u : usuarios) {
-            System.out.println("- " + u.nombre + " (" + u.email + ")");
+            logger.info("- " + u.nombre + " (" + u.email + ")");
         }
     }
 
@@ -102,9 +106,9 @@ public class Usuario {
     public void agregarAFavoritos(Favorito favorito) {
         if (!favoritos.contains(favorito)) {
             favoritos.add(favorito);
-            System.out.println("Agregado a favoritos: " + favorito.getMedicamento().getNombre());
+            logger.info("Agregado a favoritos: " + favorito.getMedicamento().getNombre());
         } else {
-            System.out.println("El medicamento ya está en los favoritos.");
+            logger.info("El medicamento ya está en los favoritos.");
         }
     }
 
@@ -112,17 +116,17 @@ public class Usuario {
     public void eliminarDeFavoritos(Favorito favorito) {
         if (favoritos.contains(favorito)) {
             favoritos.remove(favorito);
-            System.out.println("Eliminado de favoritos: " + favorito.getMedicamento().getNombre());
+            logger.info("Eliminado de favoritos: " + favorito.getMedicamento().getNombre());
         } else {
-            System.out.println("El medicamento no está en los favoritos.");
+            logger.info("El medicamento no está en los favoritos.");
         }
     }
 
     // Método para mostrar todos los favoritos del usuario
     public void mostrarFavoritos() {
-        System.out.println("Favoritos de " + nombre + ":");
+        logger.info("Favoritos de " + nombre + ":");
         for (Favorito favorito : favoritos) {
-            System.out.println(favorito.getMedicamento().getNombre());
+            logger.info(favorito.getMedicamento().getNombre());
         }
     }
     public void agregarAlerta(AlertaPrecio alerta) {

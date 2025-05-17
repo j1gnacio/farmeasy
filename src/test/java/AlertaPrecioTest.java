@@ -3,9 +3,9 @@ import org.example.Medicamento;
 import org.example.Usuario;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-public class AlertaPrecioTest {
+class AlertaPrecioTest {
     @Test
-    public void testAlertaSeActivaCuandoPrecioEsMenorAlObjetivo() {
+    void testAlertaSeActivaCuandoPrecioEsMenorAlObjetivo() {
         Usuario usuario = new Usuario("Carlos");
         Medicamento medicamento = new Medicamento("Ibuprofeno");
         AlertaPrecio alerta = new AlertaPrecio(usuario, medicamento, 20.0);
@@ -17,7 +17,7 @@ public class AlertaPrecioTest {
     }
 
     @Test
-    public void testAlertaNoSeActivaSiPrecioEsMayorOIgualAlObjetivo() {
+    void testAlertaNoSeActivaSiPrecioEsMayorOIgualAlObjetivo() {
         Usuario usuario = new Usuario("Ana");
         Medicamento medicamento = new Medicamento("Paracetamol");
         AlertaPrecio alerta = new AlertaPrecio(usuario, medicamento, 10.0);
@@ -28,7 +28,7 @@ public class AlertaPrecioTest {
         assertFalse(alerta.isAlertaActiva());
     }
     @Test
-    public void testDesactivarAlerta() {
+    void testDesactivarAlerta() {
         Usuario usuario = new Usuario("Juan");
         Medicamento medicamento = new Medicamento("Aspirina");
         AlertaPrecio alerta = new AlertaPrecio(usuario, medicamento, 8.0);

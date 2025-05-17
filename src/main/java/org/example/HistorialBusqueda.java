@@ -1,8 +1,12 @@
 package org.example;
 
 import java.util.Date;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class HistorialBusqueda {
+    private static final Logger logger = Logger.getLogger(HistorialBusqueda.class.getName());
+
     private Usuario usuario;
     private Date fecha;
     private Busqueda busqueda;
@@ -14,14 +18,14 @@ public class HistorialBusqueda {
     }
 
     public void registrarBusqueda() {
-        System.out.println("Registrando búsqueda realizada por: " + usuario.getNombre());
-        System.out.println("Fecha: " + fecha);
-        System.out.println("Término buscado: " + busqueda.getTermino());
+        logger.info("Registrando búsqueda realizada por: " + usuario.getNombre());
+        logger.info("Fecha: " + fecha);
+        logger.info("Término buscado: " + busqueda.getTermino());
         if (busqueda.getUbicacion() != null) {
-            System.out.println("Ubicación: " + busqueda.getUbicacion().getCiudad());
+            logger.info("Ubicación: " + busqueda.getUbicacion().getCiudad());
         }
         if (busqueda.getFarmacia() != null) {
-            System.out.println("Farmacia: " + busqueda.getFarmacia().getNombre());
+            logger.info("Farmacia: " + busqueda.getFarmacia().getNombre());
         }
     }
 

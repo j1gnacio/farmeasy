@@ -1,6 +1,11 @@
 package org.example;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 public class PrecioFarmacia {
+    private static final Logger logger = Logger.getLogger(PrecioFarmacia.class.getName());
+
     private Farmacia farmacia;
     private Medicamento medicamento;
     private double precioNormal;
@@ -14,10 +19,10 @@ public class PrecioFarmacia {
     }
 
     public void obtenerPrecio(){
-        System.out.println("Farmacia: " + farmacia.getNombre());
-        System.out.println("Medicamento: " + medicamento.getNombre());
-        System.out.println("Precio normal: $" + precioNormal);
-        System.out.println("Precio oferta: $" + precioOferta);
+        logger.info("Farmacia: " + farmacia.getNombre());
+        logger.info("Medicamento: " + medicamento.getNombre());
+        logger.info("Precio normal: $" + precioNormal);
+        logger.info("Precio oferta: $" + precioOferta);
     }
     public Farmacia getFarmacia() {
         return farmacia;

@@ -1,6 +1,11 @@
 package org.example;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 public class AlertaPrecio {
+    private static final Logger logger = Logger.getLogger(AlertaPrecio.class.getName());
+
     private Usuario usuario;
     private Medicamento medicamento;
     private double precioObjetivo;
@@ -17,7 +22,7 @@ public class AlertaPrecio {
     public void verificarPrecio(double precioActual) {
         if (precioActual < precioObjetivo && !alertaActiva) {
             alertaActiva = true;
-            System.out.println("¡Alerta! El precio de " + medicamento.getNombre() + " ha bajado de " +
+            logger.info("¡Alerta! El precio de " + medicamento.getNombre() + " ha bajado de " +
                     precioObjetivo + " a " + precioActual + ". ¡Es momento de comprar!");
         }
     }
@@ -26,13 +31,13 @@ public class AlertaPrecio {
     public void crearAlerta() {
         // Agregar la alerta a una lista de alertas (si existe una en Usuario u otro sistema)
         usuario.agregarAlerta(this);
-        System.out.println("Alerta de precio creada para el medicamento: " + medicamento.getNombre());
+        logger.info("Alerta de precio creada para el medicamento: " + medicamento.getNombre());
     }
 
     // Método para desactivar la alerta (en caso de que el usuario desee desactivarla)
     public void desactivarAlerta() {
         alertaActiva = false;
-        System.out.println("La alerta de precio para el medicamento " + medicamento.getNombre() + " ha sido desactivada.");
+        logger.info("La alerta de precio para el medicamento " + medicamento.getNombre() + " ha sido desactivada.");
     }
 
     // Métodos getter y setter

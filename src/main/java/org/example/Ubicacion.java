@@ -1,14 +1,28 @@
 package org.example;
 
+import java.util.UUID;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 public class Ubicacion {
+    private static final Logger logger = Logger.getLogger(Ubicacion.class.getName());
+
     private String idUbicacion;
     private String direccion;
     private String ciudad;
     private double latitud;
     private double longitud;
 
-    public void obtenerCordenada(){
-        // Simulación básica. En un caso real se usaría una API externa
+    // Constructor que inicializa todos los atributos
+    public Ubicacion(String direccion, String ciudad) {
+        this.idUbicacion = UUID.randomUUID().toString(); // Generar un ID único
+        this.direccion = direccion;
+        this.ciudad = ciudad;
+        obtenerCoordenadas(); // Obtener coordenadas al crear la ubicación
+    }
+
+    // Método para obtener coordenadas basado en la ciudad
+    private void obtenerCoordenadas() {
         switch (ciudad.toLowerCase()) {
             case "temuco":
                 latitud = -38.7359;
@@ -33,11 +47,25 @@ public class Ubicacion {
             default:
                 latitud = 0.0;
                 longitud = 0.0;
-                System.out.println("Ubicación no reconocida, coordenadas por defecto.");
+                logger.info("Ubicación no reconocida, coordenadas por defecto.");
                 return;
         }
-        System.out.println("Coordenadas para " + ciudad + ": Latitud " + latitud + ", Longitud " + longitud);
+        logger.info("Coordenadas para " + ciudad + ": Latitud " + latitud + ", Longitud " + longitud);
     }
+
+    // Métodos de acceso (getters)
+    public String getIdUbicacion() {
+        return idUbicacion;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
     public double getLatitud() {
         return latitud;
     }
@@ -46,7 +74,9 @@ public class Ubicacion {
         return longitud;
     }
 
-    public String getCiudad() {
-        return ciudad;
+    // Método para establecer coordenadas manualmente (opcional)
+    public void setCoordenadas(double latitud, double longitud) {
+        this.latitud = latitud;
+        this.longitud = longitud;
     }
 }
