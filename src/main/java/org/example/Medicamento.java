@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID; // Importar para generar un ID único
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class Medicamento {
     private static final Logger logger = Logger.getLogger(Medicamento.class.getName());

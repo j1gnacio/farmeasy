@@ -1,7 +1,6 @@
 package org.example;
 
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class AlertaPrecio {
     private static final Logger logger = Logger.getLogger(AlertaPrecio.class.getName());

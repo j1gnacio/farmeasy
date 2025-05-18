@@ -2,7 +2,6 @@ package org.example;
 
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class Ubicacion {
     private static final Logger logger = Logger.getLogger(Ubicacion.class.getName());

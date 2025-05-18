@@ -2,7 +2,6 @@ package org.example;
 
 import java.util.Date;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class HistorialBusqueda {
     private static final Logger logger = Logger.getLogger(HistorialBusqueda.class.getName());
