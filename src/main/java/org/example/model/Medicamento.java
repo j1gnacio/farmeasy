@@ -1,6 +1,7 @@
 package org.example.model;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "medicamentos")
@@ -8,4 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Medicamento {
+    @Id
+    private String id;
+    private String nombre;
+    private String precio_internet;
+
 }

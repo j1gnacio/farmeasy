@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicamentos - FarmEasy</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #2c3e50; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>Lista de Medicamentos</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+    </tr>
+    </thead>
+    <tbody id="tabla-medicamentos">
+    <!-- Aquí se insertarán los productos -->
+    </tbody>
+</table>
+
+<script>
+    // Cambia la URL si usas otro puerto o ruta
+    fetch("http://localhost:8080/api/medicamentos")
+        .then(res => res.json())
+        .then(data => {
+            const tabla = document.getElementById("tabla-medicamentos");
+            data.forEach(medicamento => {
+                const fila = document.createElement("tr");
+
+                const nombre = document.createElement("td");
+                nombre.textContent = medicamento.nombre;
+
+                const precio = document.createElement("td");
+                precio.textContent = `$${medicamento.precio_internet}`;
+
+                fila.appendChild(nombre);
+                fila.appendChild(precio);
+                tabla.appendChild(fila);
+            });
+        })
+        .catch(error => {
+            alert("Error al cargar los medicamentos: " + error);
+        });
+</script>
+</body>
+</html>
