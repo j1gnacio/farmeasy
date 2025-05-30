@@ -29,6 +29,9 @@
     <tr>
         <th>Nombre</th>
         <th>Precio</th>
+        <th>Descripcion</th>
+        <th>URL</th>
+
     </tr>
     </thead>
     <tbody id="tabla-medicamentos">
@@ -51,8 +54,22 @@
                 const precio = document.createElement("td");
                 precio.textContent = `$${medicamento.precio_internet}`;
 
+                const descripcion = document.createElement("td");
+                descripcion.textContent = medicamento.descripcion;
+
+                const url_producto = document.createElement("td");
+                const enlace = document.createElement("a");
+                enlace.href = medicamento.url_producto;
+                enlace.textContent = "Ver producto";
+                enlace.target = "_blank";
+
+                url_producto.appendChild(enlace);
+
+
                 fila.appendChild(nombre);
                 fila.appendChild(precio);
+                fila.appendChild(descripcion)
+                fila.appendChild(url_producto)
                 tabla.appendChild(fila);
             });
         })
