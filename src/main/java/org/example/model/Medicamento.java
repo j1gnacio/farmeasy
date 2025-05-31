@@ -13,8 +13,10 @@ public class Medicamento {
     private String id;
     private String nombre;
     private String precio_internet;
+    private String precio_farmacia;
     private String descripcion;
     private String url_producto;
     private String imagen_url;
+    private String farmacia;
 
 }
