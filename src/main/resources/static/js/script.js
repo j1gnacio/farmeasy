@@ -1,17 +1,19 @@
 fetch("/api/medicamentos")
     .then(res => res.json())
     .then(data => {
-        const tabla = document.getElementById("tabla-medicamentos");
+        const contenedor= document.getElementById("catalogo-medicamentos");
         data.forEach(med => {
-            const fila = document.createElement("tr");
+            const card = document.createElement("div");
+            card.className = "card";
 
-            fila.innerHTML = `
-                <td>${med.nombre}</td>
-                <td>$${med.precio_internet}</td>
-                <td>${med.descripcion}</td>
-                <td><a href="${med.url_producto}" target="_blank">Ver producto</a></td>
+            card.innerHTML = `
+                <img src="${med.imagen_url || 'https://via.placeholder.com/150'}" alt="${med.nombre}">
+                <h3>${med.nombre}</h3>
+                <td>${med.precio_internet}</td>
+                <p>${med.descripcion}</p>
+                <a href="${med.url_producto}" target="_blank">Ver producto</a>
             `;
-            tabla.appendChild(fila);
+            contenedor  .appendChild(card);
         });
     })
     .catch(err => {

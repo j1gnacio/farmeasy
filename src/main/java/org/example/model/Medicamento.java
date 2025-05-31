@@ -15,5 +15,6 @@ public class Medicamento {
     private String precio_internet;
     private String descripcion;
     private String url_producto;
+    private String imagen_url;
 
 }
