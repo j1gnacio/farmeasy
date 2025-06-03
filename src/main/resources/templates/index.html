@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main-layout}"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Bienvenido</title> <!-- Este título será usado por $CONTENT_TITLE -->
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4">Encuentra los Mejores Precios</h1>
+            <p class="lead">Compara precios de medicamentos entre diversas farmacias de forma rápida y sencilla.</p>
+            <hr class="my-4">
+            <p>Ahorra tiempo y dinero en tus compras de salud.</p>
+            <a th:href="@{/medicamentos/catalogo}" class="btn btn-light btn-lg">
+                <i class="bi bi-search"></i> Ver Catálogo Ahora
+            </a>
+            <a th:href="@{/registro}" class="btn btn-outline-light btn-lg ms-2" sec:authorize="!isAuthenticated()">
+                <i class="bi bi-person-plus-fill"></i> Crear Cuenta
+            </a>
+        </div>
+    </section>
+
+    <!-- Sección de características (Opcional) -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">¿Por qué FarmEasy?</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-currency-dollar fs-1 text-primary mb-3"></i>
+                            <h5 class="card-title">Ahorro Inteligente</h5>
+                            <p class="card-text">Compara y elige la opción más económica para tu bolsillo.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-shop fs-1 text-primary mb-3"></i>
+                            <h5 class="card-title">Variedad de Farmacias</h5>
+                            <p class="card-text">Accede a precios de múltiples farmacias en un solo lugar.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="bi bi-phone-vibrate fs-1 text-primary mb-3"></i>
+                            <h5 class="card-title">Fácil y Rápido</h5>
+                            <p class="card-text">Interfaz intuitiva para una búsqueda sin complicaciones.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>
