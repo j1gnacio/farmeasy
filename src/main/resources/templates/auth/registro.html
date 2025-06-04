@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main-layout}">
+<head>
+    <title>Registro de Usuario</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <h2 class="mb-4 text-center">Crear Cuenta</h2>
+
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <form th:action="@{/registro}" th:object="${usuario}" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nombre de Usuario:</label>
+                    <input type="text" th:field="*{username}" id="username" class="form-control" />
+                    <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger">Error de username</div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" th:field="*{email}" id="email" class="form-control" />
+                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">Error de email</div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" th:field="*{password}" id="password" class="form-control" />
+                    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger">Error de password</div>
+                </div>
+                <!-- Puedes agregar un campo para confirmar contraseña si lo deseas -->
+                <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            </form>
+            <p class="mt-3 text-center">
+                ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

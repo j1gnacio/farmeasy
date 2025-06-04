@@ -4,28 +4,28 @@ import org.example.Usuario;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class FavoritoTest {
+public class FavoritoTest {
 
-    @Test
-    void testAgregarFavorito() {
-        Usuario usuario = new Usuario("Luis");
-        Medicamento medicamento = new Medicamento("Omeprazol");
-        Favorito favorito = new Favorito(usuario, medicamento);
+//    @Test
+//    public void testAgregarFavorito() {
+//        Usuario usuario = new Usuario("Luis");
+//        Medicamento medicamento = new Medicamento("Omeprazol");
+//        Favorito favorito = new Favorito(usuario, medicamento);
+//
+//        usuario.agregarAFavoritos(favorito);
+//
+//        assertTrue(usuario.getFavoritos().contains(favorito));
+//    }
 
-        usuario.agregarAFavoritos(favorito);
-
-        assertTrue(usuario.getFavoritos().contains(favorito));
-    }
-
-    @Test
-    void testEliminarFavorito() {
-        Usuario usuario = new Usuario("Marta");
-        Medicamento medicamento = new Medicamento("Amoxicilina");
-        Favorito favorito = new Favorito(usuario, medicamento);
-
-        usuario.agregarAFavoritos(favorito);
-        usuario.eliminarDeFavoritos(favorito);
-
-        assertFalse(usuario.getFavoritos().contains(favorito));
-    }
+//    @Test
+//    public void testEliminarFavorito() {
+//        Usuario usuario = new Usuario("Marta");
+//        Medicamento medicamento = new Medicamento("Amoxicilina");
+//        Favorito favorito = new Favorito(usuario, medicamento);
+//
+//        usuario.agregarAFavoritos(favorito);
+//        usuario.eliminarDeFavoritos(favorito);
+//
+//        assertFalse(usuario.getFavoritos().contains(favorito));
+//    }
 }

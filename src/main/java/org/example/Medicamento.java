@@ -1,83 +1,100 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID; // Importar para generar un ID único
-import java.util.logging.Logger;
-
 public class Medicamento {
-    private static final Logger logger = Logger.getLogger(Medicamento.class.getName());
-
     private String idMedicamento;
     private String nombre;
     private String dosis;
     private String descripcion;
-    private List<PrecioFarmacia> precios = new ArrayList<>();
 
-    // Constructor simple: para cuando solo conocemos nombre y dosis
-    public Medicamento(String nombre, String dosis) {
-        this.idMedicamento = UUID.randomUUID().toString(); // Generar un ID único
-        this.nombre = nombre;
-        this.dosis = dosis;
-    }
+    private String precioNormal;
+    private String precioInternet;
+    private String url;
+    private String farmacia;
 
-    public Medicamento(String nombre) {
-        this.idMedicamento = UUID.randomUUID().toString(); // Generar un ID único
-        this.nombre = nombre;
-    }
-
-    // Constructor completo: útil si tienes más información disponible
-    public Medicamento(String idMedicamento, String nombre, String dosis, String descripcion) {
-        this.idMedicamento = idMedicamento; // Permitir establecer un ID específico
+    public Medicamento(String idMedicamento, String nombre, String dosis, String descripcion,
+                       String precioNormal, String precioInternet, String url, String farmacia) {
+        this.idMedicamento = idMedicamento;
         this.nombre = nombre;
         this.dosis = dosis;
         this.descripcion = descripcion;
+        this.precioNormal = precioNormal;
+        this.precioInternet = precioInternet;
+        this.url = url;
+        this.farmacia = farmacia;
     }
 
     public void obtenerDetalles() {
-        logger.info("Medicamento ID: " + idMedicamento);
-        logger.info("Medicamento: " + nombre + " " + (dosis != null ? dosis : ""));
-        if (descripcion != null) {
-            logger.info("Descripción: " + descripcion);
-        }
-
-        if (precios.isEmpty()) {
-            logger.info("No hay precios disponibles aún.");
-        } else {
-            for (PrecioFarmacia precio : precios) {
-                precio.obtenerPrecio(); // Llama al método que muestra precios y farmacia
-            }
-        }
+        System.out.println("Nombre: " + (nombre != null ? nombre : ""));
+        System.out.println("Descripción: " + (descripcion != null ? descripcion : ""));
+        System.out.println("Precio: " + (precioNormal != null ? precioNormal : "No disponible"));
+        System.out.println("Precio: " + (precioInternet != null ? precioInternet : "No disponible"));
+        System.out.println("URL: " + (url != null ? url : "No disponible"));
+        System.out.println("Farmacia: " + (farmacia != null ? farmacia : "No disponible"));
     }
 
-    public void agregarPrecio(PrecioFarmacia precio) {
-        precios.add(precio);
-    }
+    // Getters si los necesitas...
 
-    public void verificar() {
-        logger.info("Verificando disponibilidad y precios de " + nombre + "...");
-        // Aquí podrías agregar lógica como: revisar si hay ofertas o si hay stock
-    }
-
-    // Getters
     public String getIdMedicamento() {
         return idMedicamento;
+    }
+
+    public void setIdMedicamento(String idMedicamento) {
+        this.idMedicamento = idMedicamento;
     }
 
     public String getNombre() {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getDosis() {
         return dosis;
+    }
+
+    public void setDosis(String dosis) {
+        this.dosis = dosis;
     }
 
     public String getDescripcion() {
         return descripcion;
     }
 
-    // Setter para idMedicamento, en caso de que necesites establecerlo después
-    public void setIdMedicamento(String idMedicamento) {
-        this.idMedicamento = idMedicamento;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getPrecioNormal() {
+        return precioNormal;
+    }
+
+    public void setPrecioNormal(String precioNormal) {
+        this.precioNormal = precioNormal;
+    }
+
+    public String getPrecioInternet() {
+        return precioInternet;
+    }
+
+    public void setPrecioInternet(String precioInternet) {
+        this.precioInternet = precioInternet;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getFarmacia() {
+        return farmacia;
+    }
+
+    public void setFarmacia(String farmacia) {
+        this.farmacia = farmacia;
     }
 }
