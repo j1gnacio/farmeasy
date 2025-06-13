@@ -4,6 +4,9 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "medicamentos")
 @Data
 @AllArgsConstructor
@@ -12,11 +15,10 @@ public class Medicamento {
     @Id
     private String id;
     private String nombre;
-    private String precio_internet;
-    private String precio_farmacia;
     private String descripcion;
     private String url_producto;
     private String imagen_url;
-    private String farmacia;
+    private List<PrecioInfo> precios = new ArrayList<>();
+
 
 }
