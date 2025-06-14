@@ -1,6 +1,6 @@
 import org.example.AlertaPrecio;
-import org.example.Medicamento;
-import org.example.Usuario;
+import org.example.model.Medicamento;
+import org.example.model.Usuario;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 public class AlertaPrecioTest {
