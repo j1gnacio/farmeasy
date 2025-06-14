@@ -21,4 +21,32 @@ public class Medicamento {
     private String url_producto;
     private String imagen_url;
     private String farmacia;
+    private String dosis;
+
+    public String getDosis() {
+        return dosis;
+    }
+
+    public String getPrecioInternet() {
+        return precio_internet;
+    }
+
+    public String getPrecioNormal() {
+        return precio_farmacia;
+    }
+
+    public String getUrl() {
+        return url_producto;
+    }
+
+    public Medicamento(String id, String nombre, String dosis, String descripcion, String precio_internet, String precio_farmacia, String url_producto, String farmacia) {
+        this.id = id;
+        this.nombre = nombre;
+        this.dosis = dosis;
+        this.descripcion = descripcion;
+        this.precio_internet = precio_internet;
+        this.precio_farmacia = precio_farmacia;
+        this.url_producto = url_producto;
+        this.farmacia = farmacia;
+    }
 }

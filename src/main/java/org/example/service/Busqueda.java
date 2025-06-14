@@ -39,8 +39,6 @@ public class Busqueda {
             for (Medicamento medicamento : farmacia.getListaMedicamentos()) {
                 if (medicamento.getNombre().toLowerCase().contains(termino.toLowerCase())) {
                     logger.info("Medicamento encontrado: {}", medicamento.getNombre());
-                    // El método obtenerDetalles() no existe, se elimina la llamada
-                    // medicamento.obtenerDetalles();
                 }
             }
         } else {
@@ -52,11 +50,23 @@ public class Busqueda {
         return termino;
     }
 
+    public void setTermino(String termino) {
+        this.termino = termino;
+    }
+
     public Ubicacion getUbicacion() {
         return ubicacion;
     }
 
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
     public Farmacia getFarmacia() {
         return farmacia;
+    }
+
+    public void setFarmacia(Farmacia farmacia) {
+        this.farmacia = farmacia;
     }
 }

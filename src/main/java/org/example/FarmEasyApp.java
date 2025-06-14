@@ -32,7 +32,7 @@ public class FarmEasyApp {
         }
     }
 
-    private Medicamento documentToMedicamento(Document doc) {
+    protected Medicamento documentToMedicamento(Document doc) {
         if (doc == null) {
             return null;
         }
