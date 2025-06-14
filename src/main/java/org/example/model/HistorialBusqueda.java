@@ -1,45 +1,44 @@
 package org.example.model;
 
 import java.util.Date;
-import java.util.logging.Logger;
-import org.example.model.Usuario;
-import org.example.service.Busqueda;
+import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Document(collection = "historial_busquedas")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HistorialBusqueda {
-    private static final Logger logger = Logger.getLogger(HistorialBusqueda.class.getName());
+    @Id
+    private String id = UUID.randomUUID().toString();
 
+    @DBRef
     private Usuario usuario;
-    private Date fecha;
-    private Busqueda busqueda;
 
-    public HistorialBusqueda(Usuario usuario, Busqueda busqueda) {
+    private Date fecha = new Date();
+
+    private String termino;
+
+    private String ciudad;
+
+    private String direccion;
+
+    @DBRef
+    private Farmacia farmacia;
+
+    public HistorialBusqueda(Usuario usuario, String termino, String ciudad, String direccion, Farmacia farmacia) {
         this.usuario = usuario;
-        this.busqueda = busqueda;
-        this.fecha = new Date(); // Se asigna la fecha actual al momento de crear el historial
-    }
-
-    public void registrarBusqueda() {
-        logger.info("Registrando búsqueda realizada por: " + usuario.getNombre());
-        logger.info("Fecha: " + fecha);
-        logger.info("Término buscado: " + busqueda.getTermino());
-        if (busqueda.getUbicacion() != null) {
-            logger.info("Ubicación: " + busqueda.getUbicacion().getCiudad());
-        }
-        if (busqueda.getFarmacia() != null) {
-            logger.info("Farmacia: " + busqueda.getFarmacia().getNombre());
-        }
-    }
-
-    // Getters (por si necesitas acceder desde otra clase)
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public Busqueda getBusqueda() {
-        return busqueda;
+        this.termino = termino;
+        this.ciudad = ciudad;
+        this.direccion = direccion;
+        this.farmacia = farmacia;
+        this.fecha = new Date();
     }
 }

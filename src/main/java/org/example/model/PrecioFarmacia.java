@@ -1,57 +1,37 @@
 package org.example.model;
 
-import java.util.logging.Logger;
+import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Document(collection = "precio_farmacia")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PrecioFarmacia {
-    private static final Logger logger = Logger.getLogger(PrecioFarmacia.class.getName());
+    @Id
+    private String id = UUID.randomUUID().toString();
 
+    @DBRef
     private Farmacia farmacia;
+
+    @DBRef
     private Medicamento medicamento;
+
     private double precioNormal;
+
     private double precioOferta;
 
-    public PrecioFarmacia(Farmacia farmacia, Medicamento medicamento, double precioNormal, double precioOferta){
-        this.farmacia=farmacia;
-        this.medicamento=medicamento;
-        this.precioNormal=precioNormal;
-        this.precioOferta=precioOferta;
-    }
-
-    public void obtenerPrecio(){
-        logger.info("Farmacia: " + farmacia.getNombre());
-        logger.info("Medicamento: " + medicamento.getNombre());
-        logger.info("Precio normal: $" + precioNormal);
-        logger.info("Precio oferta: $" + precioOferta);
-    }
-    public Farmacia getFarmacia() {
-        return farmacia;
-    }
-
-    public void setFarmacia(Farmacia farmacia) {
+    public PrecioFarmacia(Farmacia farmacia, Medicamento medicamento, double precioNormal, double precioOferta) {
         this.farmacia = farmacia;
-    }
-
-    public Medicamento getMedicamento() {
-        return medicamento;
-    }
-
-    public void setMedicamento(Medicamento medicamento) {
         this.medicamento = medicamento;
-    }
-
-    public double getPrecioNormal() {
-        return precioNormal;
-    }
-
-    public void setPrecioNormal(double precioNormal) {
         this.precioNormal = precioNormal;
-    }
-
-    public double getPrecioOferta() {
-        return precioOferta;
-    }
-
-    public void setPrecioOferta(double precioOferta) {
         this.precioOferta = precioOferta;
     }
 }

@@ -1,29 +1,32 @@
 package org.example.model;
 
+import java.util.UUID;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Document(collection = "favoritos")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Favorito {
-    private String idFavorito;
+    @Id
+    private String idFavorito = UUID.randomUUID().toString();
+
+    @DBRef
     private Usuario usuario;
+
+    @DBRef
     private Medicamento medicamento;
 
     public Favorito(Usuario usuario, Medicamento medicamento) {
         this.usuario = usuario;
         this.medicamento = medicamento;
-        this.idFavorito = generarIdUnico(); // Genera un ID único para el favorito
-    }
-
-    private String generarIdUnico() {
-        return "FAV-" + System.currentTimeMillis(); // ID único basado en la hora
-    }
-
-    public Medicamento getMedicamento() {
-        return medicamento;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public String getIdFavorito() {
-        return idFavorito;
+        this.idFavorito = UUID.randomUUID().toString();
     }
 }

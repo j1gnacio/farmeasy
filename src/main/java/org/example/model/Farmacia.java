@@ -19,6 +19,9 @@ public class Farmacia {
 
     private String nombre;
 
+    // Ubicación de la farmacia
+    private Ubicacion ubicacion;
+
     // Lista de medicamentos como referencias (opcional si usas relaciones)
     private List<Medicamento> listaMedicamentos;
 }
