@@ -1,7 +1,9 @@
-package org.example;
+package org.example.model;
 
 import java.util.Date;
 import java.util.logging.Logger;
+import org.example.model.Usuario;
+import org.example.service.Busqueda;
 
 public class HistorialBusqueda {
     private static final Logger logger = Logger.getLogger(HistorialBusqueda.class.getName());
