@@ -1,7 +1,8 @@
+// Archivo: src/main/java/org/example/controller/MedicamentoWebController.java
 package org.example.controller;
 
-import org.example.model.Medicamento;
-import org.example.repository.MedicamentoRepository;
+import org.example.dto.MedicamentoDisplayDTO; // Importa el DTO
+import org.example.service.MedicamentoService; // Importa el Servicio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,25 +13,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-@RequestMapping("/medicamentos") // Ruta base para este controlador web
+@RequestMapping("/medicamentos")
 public class MedicamentoWebController {
 
     @Autowired
-    private MedicamentoRepository medicamentoRepository;
+    private MedicamentoService medicamentoService; // Inyecta el SERVICIO, no el repositorio
 
     @GetMapping("/catalogo")
     public String mostrarCatalogo(Model model, @RequestParam(required = false) String busqueda) {
-        List<Medicamento> medicamentos;
-        if (busqueda != null && !busqueda.isEmpty()) {
-            medicamentos = medicamentoRepository.findByNombreContainingIgnoreCase(busqueda);
-            model.addAttribute("busquedaActual", busqueda);
-        } else {
-            medicamentos = medicamentoRepository.findAll();
-        }
-        model.addAttribute("medicamentos", medicamentos);
-        return "medicamentos/catalogo"; // Vista catalogo.html
-    }
 
-    // Puedes añadir más métodos aquí para otras vistas web de medicamentos
-    // por ejemplo, ver detalle de un medicamento, etc.
+        // Llama al método del servicio que devuelve la lista de DTOs
+        List<MedicamentoDisplayDTO> medicamentosParaVista = medicamentoService.buscarParaCatalogo(busqueda);
+
+        // Pasa la lista correcta (de DTOs) a la vista
+        model.addAttribute("medicamentos", medicamentosParaVista);
+
+        if (busqueda != null && !busqueda.isEmpty()) {
+            model.addAttribute("busquedaActual", busqueda);
+        }
+
+        return "medicamentos/catalogo";
+    }
 }

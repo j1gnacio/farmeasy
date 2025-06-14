@@ -36,7 +36,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/css/**", "/js/**", "/img/**", "/registro", "/login", "/logout", "/api/**").permitAll() // Permitir acceso a API, y recursos estáticos
-                        .requestMatchers("/medicamentos/catalogo").permitAll() // Catálogo público
+                        .requestMatchers("/medicamentos/**").permitAll() // Catálogo público
                         // .requestMatchers("/admin/**").hasRole("ADMIN") // Ejemplo para rutas de admin
                         .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
                 )

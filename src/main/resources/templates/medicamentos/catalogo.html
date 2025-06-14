@@ -7,24 +7,24 @@
     <style>
         .card-img-top-custom {
             width: 100%;
-            height: 200px; /* Altura fija para todas las imágenes */
+            height: 200px;
             object-fit: contain;
             padding: 10px;
             border-bottom: 1px solid #eee;
         }
-        .card-img-placeholder { /* Nuevo estilo para cuando no hay imagen_url */
+        .card-img-placeholder {
             width: 100%;
             height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f8f9fa; /* Un fondo claro */
+            background-color: #f8f9fa;
             border-bottom: 1px solid #eee;
             padding: 10px;
         }
-        .card-img-placeholder i { /* Estilo para el icono */
+        .card-img-placeholder i {
             font-size: 3rem;
-            color: #adb5bd; /* Un gris suave */
+            color: #adb5bd;
         }
         .card-title-custom {
             min-height: 48px;
@@ -75,65 +75,53 @@
 
         <!-- Grid de Medicamentos -->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" th:if="${medicamentos != null and not #lists.isEmpty(medicamentos)}">
-            <div class="col" th:each="medicamento : ${medicamentos}">
+            <div class="col" th:each="medicamento : ${medicamentos}"> <!-- 'medicamento' ahora es un MedicamentoDisplayDTO -->
                 <div class="card h-100 shadow-sm">
 
-                    <!-- SECCIÓN DE IMAGEN MODIFICADA -->
-                    <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none">
-                        <!-- Mostrar imagen si imagen_url no está vacía -->
-                        <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                             th:src="${medicamento.imagen_url}"
-                             th:alt="${'Imagen de ' + medicamento.nombre}"
-                             class="card-img-top-custom"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /> <!-- Oculta la imagen rota y muestra el div placeholder -->
-                        <!-- Mostrar un div placeholder visual si imagen_url está vacía O si la imagen original falló (manejado por onerror) -->
-                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder" style="display: flex;"> <!-- Inicialmente flex si no hay URL -->
-                            <i class="bi bi-image"></i> <!-- Icono de Bootstrap para imagen -->
-                        </div>
-                        <!-- Elemento para mostrar en caso de error de carga de la imagen real, inicialmente oculto si hay imagen_url -->
-                        <div class="card-img-placeholder" style="display: none;">
-                            <i class="bi bi-image-alt"></i> <!-- Otro icono o el mismo -->
-                        </div>
+                    <!-- SECCIÓN DE IMAGEN CORREGIDA -->
+                    <a th:if="${medicamento.urlProducto}" th:href="${medicamento.urlProducto}" target="_blank" class="text-decoration-none">
+                        <th:block th:if="${not #strings.isEmpty(medicamento.imagenUrl)}">
+                            <img th:src="${medicamento.imagenUrl}" th:alt="${'Imagen de ' + medicamento.nombreDisplay}" class="card-img-top-custom" />
+                        </th:block>
+                        <th:block th:unless="${not #strings.isEmpty(medicamento.imagenUrl)}">
+                            <div class="card-img-placeholder"><i class="bi bi-image-alt"></i></div>
+                        </th:block>
                     </a>
-                    <!-- Caso: No hay url_producto, solo mostramos la imagen o placeholder -->
-                    <div th:unless="${medicamento.url_producto}">
-                        <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                             th:src="${medicamento.imagen_url}"
-                             th:alt="${'Imagen de ' + medicamento.nombre}"
-                             class="card-img-top-custom"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder" style="display: flex;">
-                            <i class="bi bi-image"></i>
-                        </div>
-                        <div class="card-img-placeholder" style="display: none;">
-                            <i class="bi bi-image-alt"></i>
-                        </div>
+                    <div th:unless="${medicamento.urlProducto}">
+                        <th:block th:if="${not #strings.isEmpty(medicamento.imagenUrl)}">
+                            <img th:src="${medicamento.imageUrl}" th:alt="${'Imagen de ' + medicamento.nombreDisplay}" class="card-img-top-custom" />
+                        </th:block>
+                        <th:block th:unless="${not #strings.isEmpty(medicamento.imagenUrl)}">
+                            <div class="card-img-placeholder"><i class="bi bi-image-alt"></i></div>
+                        </th:block>
                     </div>
-                    <!-- FIN DE SECCIÓN DE IMAGEN MODIFICADA -->
-
 
                     <div class="card-body card-body-custom">
                         <div>
                             <h5 class="card-title card-title-custom">
-                                <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none text-dark" th:text="${medicamento.nombre}"></a>
-                                <span th:unless="${medicamento.url_producto}" th:text="${medicamento.nombre}"></span>
+                                <!-- NOMBRE CORREGIDO -->
+                                <a th:if="${medicamento.urlProducto}" th:href="${medicamento.urlProducto}" target="_blank" class="text-decoration-none text-dark" th:text="${medicamento.nombreDisplay}"></a>
+                                <span th:unless="${medicamento.urlProducto}" th:text="${medicamento.nombreDisplay}"></span>
                             </h5>
-                            <p class="card-text text-muted small" th:if="${medicamento.descripcion}" th:text="${#strings.abbreviate(medicamento.descripcion, 80)}"></p>
+                            <p class="card-text text-muted small" th:if="${medicamento.descripcion != null and medicamento.descripcion != 'No disponible'}" th:text="${#strings.abbreviate(medicamento.descripcion, 80)}"></p>
                         </div>
 
                         <div class="mt-auto pt-2">
                             <p class="card-text mb-1">
-                                <small class="text-muted" th:if="${medicamento.farmacia}" th:text="${'Farmacia: ' + medicamento.farmacia}"></small>
+                                <small class="text-muted" th:if="${medicamento.farmaciaNombre}" th:text="${'Farmacia: ' + medicamento.farmaciaNombre}"></small>
                             </p>
-                            <p class="card-text mb-1" th:if="${medicamento.precio_internet}">
-                                <span class="fw-bold fs-5 text-success" th:text="${medicamento.precio_internet}"></span>
+
+                            <p class="card-text mb-1" th:if="${medicamento.precioInternet != null and medicamento.precioInternet > 0}">
+                                <span class="fw-bold fs-5 text-success" th:text="${'$' + #numbers.formatDecimal(medicamento.precioInternet, 1, 'POINT', 0, 'COMMA')}"></span>
                                 <small class="text-muted">(Internet)</small>
                             </p>
-                            <p class="card-text mb-2" th:if="${medicamento.precio_farmacia}">
-                                <span class="fw-bold" th:text="${medicamento.precio_farmacia}"></span>
+
+                            <p class="card-text mb-2" th:if="${medicamento.precioFisico != null and medicamento.precioFisico > 0}">
+                                <span class="fw-bold" th:text="${'$' + #numbers.formatDecimal(medicamento.precioFisico, 1, 'POINT', 0, 'COMMA')}"></span>
                                 <small class="text-muted">(Físico)</small>
                             </p>
-                            <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
+
+                            <a th:if="${medicamento.urlProducto}" th:href="${medicamento.urlProducto}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
                                 Ver en tienda <i class="bi bi-box-arrow-up-right"></i>
                             </a>
                         </div>
@@ -145,7 +133,7 @@
 </div>
 
 <th:block layout:fragment="scripts">
-    <!-- <script th:src="@{/js/catalogo-script.js}"></script> -->
+    <!-- No se necesitan scripts específicos por ahora -->
 </th:block>
 </body>
 </html>
