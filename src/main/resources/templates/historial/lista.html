@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main-layout.html}">
+<head>
+    <title>Mi Historial de Búsqueda</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-4">
+        <h1 class="mb-4">Mi Historial de Búsqueda</h1>
+
+        <div th:if="${historial == null or #lists.isEmpty(historial)}" class="alert alert-info">
+            No tienes búsquedas recientes.
+        </div>
+
+        <ul class="list-group" th:if="${historial != null and not #lists.isEmpty(historial)}">
+            <li th:each="item : ${historial}" class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <a th:href="@{/medicamentos/catalogo(busqueda=${item.terminoBuscado})}" class="fw-bold text-decoration-none" th:text="${item.terminoBuscado}"></a>
+                    <small class="d-block text-muted" th:text="'Buscado el: ' + ${#temporals.format(item.fechaBusqueda, 'dd-MM-yyyy HH:mm')}"></small>
+                </div>
+                <a th:href="@{/medicamentos/catalogo(busqueda=${item.terminoBuscado})}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-search"></i> Volver a buscar
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

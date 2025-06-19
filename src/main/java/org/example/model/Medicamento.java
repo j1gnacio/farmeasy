@@ -1,8 +1,11 @@
 package org.example.model;
 
-import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Document(collection = "medicamentos")
 @Data
@@ -12,11 +15,47 @@ public class Medicamento {
     @Id
     private String id;
     private String nombre;
-    private String precio_internet;
-    private String precio_farmacia;
+    private Double precioInternet;
+    private Double precioFarmacia;
     private String descripcion;
     private String url_producto;
     private String imagen_url;
     private String farmacia;
+    private String dosis;
 
+    public String getDosis() {
+        return dosis;
+    }
+
+    public Double getPrecioInternet() {
+        return precioInternet;
+    }
+
+    public Double getPrecioNormal() {
+        return precioFarmacia;
+    }
+
+    public String getUrl() {
+        return url_producto;
+    }
+
+    public Medicamento(String id, String nombre, String dosis, String descripcion, Double PrecioInternet, Double PrecioFarmacia, String url_producto, String farmacia) {
+        this.id = id;
+        this.nombre = nombre;
+        this.dosis = dosis;
+        this.descripcion = descripcion;
+        this.precioInternet = PrecioInternet;
+        this.precioFarmacia = PrecioFarmacia;
+        this.url_producto = url_producto;
+        this.farmacia = farmacia;
+    }
+
+    public String getNombre() { return nombre;
+    }
+
+    public String getDescripcion() { return descripcion;
+    }
+
+    public String getFarmacia() { return farmacia;
+    }
 }

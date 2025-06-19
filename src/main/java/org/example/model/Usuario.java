@@ -1,17 +1,21 @@
 package org.example.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Document(collection = "usuarios")
 @Data
@@ -34,6 +38,9 @@ public class Usuario {
     @NotEmpty(message = "El email no puede estar vacío.")
     @Indexed(unique = true)
     private String email;
+
+    @DBRef(lazy = true) // Carga perezosa: solo se carga la lista cuando se accede a ella.
+    private List<Favorito> favoritos = new ArrayList<>();
 
     private Set<String> roles = new HashSet<>(); // Ejemplo: "ROLE_USER", "ROLE_ADMIN"
 

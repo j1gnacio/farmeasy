@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/main-layout.html}">
+<head>
+    <title>Mis Favoritos</title>
+    <!-- Reutilizamos los mismos estilos del catálogo -->
+    <style>
+        .card-img-top-custom {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .card-img-placeholder {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+        }
+        .card-img-placeholder i {
+            font-size: 3rem;
+            color: #adb5bd;
+        }
+        .card-title-custom {
+            min-height: 48px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-body-custom {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-4">
+
+        <!-- Mensajes de Alerta (para cuando se elimina un favorito) -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <h1 class="mb-4">Mis Medicamentos Favoritos</h1>
+
+        <!-- Mensaje para cuando la lista de favoritos está vacía -->
+        <div th:if="${medicamentos == null or #lists.isEmpty(medicamentos)}" class="alert alert-info mt-4" role="alert">
+            Aún no has añadido ningún medicamento a tus favoritos. ¡Explora el <a th:href="@{/medicamentos/catalogo}" class="alert-link">catálogo</a> para empezar!
+        </div>
+
+        <!-- Grid de Medicamentos Favoritos -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" th:if="${medicamentos != null and not #lists.isEmpty(medicamentos)}">
+            <!-- El bucle que ya te funcionaba -->
+            <div class="col" th:each="medicamento : ${medicamentos}">
+                <div class="card h-100 shadow-sm">
+
+                    <!-- ========================================================== -->
+                    <!-- ==   CÓDIGO PARA MOSTRAR LA INFO DEL MEDICAMENTO (AÑADIDO) == -->
+                    <!-- ========================================================== -->
+
+                    <!-- Sección de Imagen -->
+                    <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none">
+                        <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
+                             th:src="${medicamento.imagen_url}" th:alt="${'Imagen de ' + medicamento.nombre}"
+                             class="card-img-top-custom" />
+                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder">
+                            <i class="bi bi-image"></i>
+                        </div>
+                    </a>
+                    <div th:unless="${medicamento.url_producto}">
+                        <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
+                             th:src="${medicamento.imagen_url}" th:alt="${'Imagen de ' + medicamento.nombre}"
+                             class="card-img-top-custom" />
+                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder">
+                            <i class="bi bi-image"></i>
+                        </div>
+                    </div>
+
+                    <div class="card-body card-body-custom">
+                        <div>
+                            <h5 class="card-title card-title-custom">
+                                <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none text-dark" th:text="${medicamento.nombre}"></a>
+                                <span th:unless="${medicamento.url_producto}" th:text="${medicamento.nombre}"></span>
+                            </h5>
+                            <p class="card-text text-muted small" th:if="${medicamento.descripcion}" th:text="${#strings.abbreviate(medicamento.descripcion, 80)}"></p>
+                        </div>
+
+                        <div class="mt-auto pt-2">
+                            <p class="card-text mb-1">
+                                <small class="text-muted" th:if="${medicamento.farmacia}" th:text="${'Farmacia: ' + medicamento.farmacia}"></small>
+                            </p>
+                            <p class="card-text mb-1" th:if="${medicamento.precioInternet != null}">
+                                <span class="fw-bold fs-5 text-success" th:text="${'$' + #numbers.formatDecimal(medicamento.precioInternet, 1, 'POINT', 0, 'COMMA')}"></span>
+                                <small class="text-muted">(Internet)</small>
+                            </p>
+                            <p class="card-text mb-2" th:if="${medicamento.precioFarmacia != null}">
+                                <span class="fw-bold" th:text="${'$' + #numbers.formatDecimal(medicamento.precioFarmacia, 1, 'POINT', 0, 'COMMA')}"></span>
+                                <small class="text-muted">(Físico)</small>
+                            </p>
+
+                            <div class="d-grid gap-2 mt-2">
+                                <!-- Botón para eliminar desde esta página -->
+                                <form th:action="@{/favoritos/eliminar}" method="post">
+                                    <input type="hidden" name="medicamentoId" th:value="${medicamento.id}" />
+                                    <!-- Parámetro para redirección inteligente -->
+                                    <input type="hidden" name="source" value="favoritos" />
+                                    <button type="submit" class="btn btn-sm btn-danger w-100">
+                                        <i class="bi bi-trash-fill"></i> Eliminar
+                                    </button>
+                                </form>
+
+                                <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
+                                    Ver en tienda <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ========================================================== -->
+                    <!-- ==                   FIN DEL CÓDIGO AÑADIDO             == -->
+                    <!-- ========================================================== -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

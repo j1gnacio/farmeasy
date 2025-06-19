@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/main-layout.html}">
 <head>
     <title>Catálogo de Medicamentos</title>
     <style>
         .card-img-top-custom {
             width: 100%;
-            height: 200px; /* Altura fija para todas las imágenes */
+            height: 200px;
             object-fit: contain;
             padding: 10px;
             border-bottom: 1px solid #eee;
         }
-        .card-img-placeholder { /* Nuevo estilo para cuando no hay imagen_url */
+        .card-img-placeholder {
             width: 100%;
             height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f8f9fa; /* Un fondo claro */
+            background-color: #f8f9fa;
             border-bottom: 1px solid #eee;
             padding: 10px;
         }
-        .card-img-placeholder i { /* Estilo para el icono */
+        .card-img-placeholder i {
             font-size: 3rem;
-            color: #adb5bd; /* Un gris suave */
+            color: #adb5bd;
         }
         .card-title-custom {
             min-height: 48px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -44,6 +46,17 @@
 <body>
 <div layout:fragment="content">
     <div class="container mt-4">
+
+        <!-- Sección de Mensajes de Alerta -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
         <h1 class="mb-4">Catálogo de Medicamentos</h1>
 
         <!-- Formulario de búsqueda -->
@@ -52,6 +65,12 @@
                 <label for="busqueda" class="form-label visually-hidden">Buscar Medicamento</label>
                 <input type="text" class="form-control form-control-lg" id="busqueda" name="busqueda"
                        placeholder="Buscar por nombre de medicamento..." th:value="${busquedaActual}">
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <label for="direccion" class="form-label">Ubicación</label>
+                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese ubicación" />
+                <input type="hidden" id="latitud" name="latitud" th:value="${latitud}" />
+                <input type="hidden" id="longitud" name="longitud" th:value="${longitud}" />
             </div>
             <div class="col-sm-6 col-md-auto">
                 <button type="submit" class="btn btn-primary btn-lg w-100">
@@ -63,7 +82,7 @@
             </div>
         </form>
 
-        <!-- Mensajes de alerta -->
+        <!-- Mensajes de alerta de búsqueda -->
         <div th:if="${medicamentos != null and #lists.isEmpty(medicamentos) and busquedaActual != null and !busquedaActual.isEmpty()}"
              class="alert alert-warning" role="alert">
             No se encontraron medicamentos que coincidan con "<strong th:text="${busquedaActual}"></strong>". Intenta con otro término.
@@ -78,28 +97,22 @@
             <div class="col" th:each="medicamento : ${medicamentos}">
                 <div class="card h-100 shadow-sm">
 
-                    <!-- SECCIÓN DE IMAGEN MODIFICADA -->
+                    <!-- Sección de Imagen -->
                     <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none">
-                        <!-- Mostrar imagen si imagen_url no está vacía -->
                         <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                             th:src="${medicamento.imagen_url}"
-                             th:alt="${'Imagen de ' + medicamento.nombre}"
+                             th:src="${medicamento.imagen_url}" th:alt="${'Imagen de ' + medicamento.nombre}"
                              class="card-img-top-custom"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /> <!-- Oculta la imagen rota y muestra el div placeholder -->
-                        <!-- Mostrar un div placeholder visual si imagen_url está vacía O si la imagen original falló (manejado por onerror) -->
-                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder" style="display: flex;"> <!-- Inicialmente flex si no hay URL -->
-                            <i class="bi bi-image"></i> <!-- Icono de Bootstrap para imagen -->
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder" style="display: flex;">
+                            <i class="bi bi-image"></i>
                         </div>
-                        <!-- Elemento para mostrar en caso de error de carga de la imagen real, inicialmente oculto si hay imagen_url -->
                         <div class="card-img-placeholder" style="display: none;">
-                            <i class="bi bi-image-alt"></i> <!-- Otro icono o el mismo -->
+                            <i class="bi bi-image-alt"></i>
                         </div>
                     </a>
-                    <!-- Caso: No hay url_producto, solo mostramos la imagen o placeholder -->
                     <div th:unless="${medicamento.url_producto}">
                         <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                             th:src="${medicamento.imagen_url}"
-                             th:alt="${'Imagen de ' + medicamento.nombre}"
+                             th:src="${medicamento.imagen_url}" th:alt="${'Imagen de ' + medicamento.nombre}"
                              class="card-img-top-custom"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                         <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder" style="display: flex;">
@@ -109,14 +122,11 @@
                             <i class="bi bi-image-alt"></i>
                         </div>
                     </div>
-                    <!-- FIN DE SECCIÓN DE IMAGEN MODIFICADA -->
-
 
                     <div class="card-body card-body-custom">
                         <div>
                             <h5 class="card-title card-title-custom">
-                                <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none text-dark" th:text="${medicamento.nombre}"></a>
-                                <span th:unless="${medicamento.url_producto}" th:text="${medicamento.nombre}"></span>
+                                <a th:href="@{/medicamentos/{id}(id=${medicamento.id})}" class="text-decoration-none text-dark" th:text="${medicamento.nombre}"></a>
                             </h5>
                             <p class="card-text text-muted small" th:if="${medicamento.descripcion}" th:text="${#strings.abbreviate(medicamento.descripcion, 80)}"></p>
                         </div>
@@ -125,17 +135,41 @@
                             <p class="card-text mb-1">
                                 <small class="text-muted" th:if="${medicamento.farmacia}" th:text="${'Farmacia: ' + medicamento.farmacia}"></small>
                             </p>
-                            <p class="card-text mb-1" th:if="${medicamento.precio_internet}">
-                                <span class="fw-bold fs-5 text-success" th:text="${medicamento.precio_internet}"></span>
+
+                            <p class="card-text mb-1" th:if="${medicamento.precioInternet != null}">
+                                <span class="fw-bold fs-5 text-success" th:text="${'$' + #numbers.formatDecimal(medicamento.precioInternet, 1, 'POINT', 0, 'COMMA')}"></span>
                                 <small class="text-muted">(Internet)</small>
                             </p>
-                            <p class="card-text mb-2" th:if="${medicamento.precio_farmacia}">
-                                <span class="fw-bold" th:text="${medicamento.precio_farmacia}"></span>
+                            <p class="card-text mb-2" th:if="${medicamento.precioFarmacia != null}">
+                                <span class="fw-bold" th:text="${'$' + #numbers.formatDecimal(medicamento.precioFarmacia, 1, 'POINT', 0, 'COMMA')}"></span>
                                 <small class="text-muted">(Físico)</small>
                             </p>
-                            <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
-                                Ver en tienda <i class="bi bi-box-arrow-up-right"></i>
-                            </a>
+
+                            <div class="d-grid gap-2 mt-2">
+                                <div sec:authorize="isAuthenticated()">
+
+                                    <!-- CASO 1: El medicamento NO está en la lista de favoritos del usuario -->
+                                    <form th:if="${!favoritosIds.contains(medicamento.id)}" th:action="@{/favoritos/agregar}" method="post">
+                                        <input type="hidden" name="medicamentoId" th:value="${medicamento.id}" />
+                                        <button type="submit" class="btn btn-sm btn-outline-warning w-100">
+                                            <i class="bi bi-star"></i> Añadir a Favoritos
+                                        </button>
+                                    </form>
+
+                                    <!-- CASO 2: El medicamento SÍ está en la lista de favoritos del usuario -->
+                                    <form th:if="${favoritosIds.contains(medicamento.id)}" th:action="@{/favoritos/eliminar}" method="post">
+                                        <input type="hidden" name="medicamentoId" th:value="${medicamento.id}" />
+                                        <button type="submit" class="btn btn-sm btn-warning w-100">
+                                            <i class="bi bi-star-fill"></i> Quitar de Favoritos
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                                <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
+                                    Ver en tienda <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,8 +178,23 @@
     </div>
 </div>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY&libraries=places"></script>
+<script>
+    function initAutocomplete() {
+        var input = document.getElementById('direccion');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+            if (!place.geometry) { return; }
+            document.getElementById('latitud').value = place.geometry.location.lat();
+            document.getElementById('longitud').value = place.geometry.location.lng();
+        });
+    }
+    window.onload = initAutocomplete;
+</script>
+
 <th:block layout:fragment="scripts">
-    <!-- <script th:src="@{/js/catalogo-script.js}"></script> -->
+    <!-- Espacio para scripts específicos de la página -->
 </th:block>
 </body>
 </html>

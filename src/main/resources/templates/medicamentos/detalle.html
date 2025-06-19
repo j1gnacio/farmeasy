@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/main-layout.html}">
+<head>
+    <title th:text="${medicamento.nombre} + ' - Detalle'">Detalle del Medicamento</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-5">
+
+        <!-- Fila principal con la información del producto -->
+        <div class="row">
+            <!-- Columna de la imagen -->
+            <div class="col-md-5 text-center">
+                <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
+                     th:src="${medicamento.imagen_url}"
+                     th:alt="${medicamento.nombre}"
+                     class="img-fluid rounded shadow-sm" style="max-height: 400px;"/>
+                <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}"
+                     class="d-flex align-items-center justify-content-center bg-light rounded shadow-sm"
+                     style="height: 400px;">
+                    <i class="bi bi-image" style="font-size: 5rem; color: #ccc;"></i>
+                </div>
+            </div>
+
+            <!-- Columna de la información y acciones -->
+            <div class="col-md-7">
+                <h1 class="display-5" th:text="${medicamento.nombre}">Nombre del Medicamento</h1>
+                <p class="lead text-muted" th:if="${medicamento.descripcion}" th:text="${medicamento.descripcion}">
+                    Descripción larga del medicamento.
+                </p>
+                <hr>
+
+                <!-- Información de precios del medicamento actual -->
+                <div class="mb-3">
+                    <h4>Precio en <span th:text="${medicamento.farmacia}"></span></h4>
+                    <p class="mb-1 fs-4" th:if="${medicamento.precioInternet != null}">
+                        <strong class="text-success" th:text="${'$' + #numbers.formatDecimal(medicamento.precioInternet, 1, 'POINT', 0, 'COMMA')}"></strong>
+                        <small class="text-muted">(Internet)</small>
+                    </p>
+                    <p class="mb-1 fs-5" th:if="${medicamento.precioFarmacia != null}">
+                        <strong th:text="${'$' + #numbers.formatDecimal(medicamento.precioFarmacia, 1, 'POINT', 0, 'COMMA')}"></strong>
+                        <small class="text-muted">(Físico)</small>
+                    </p>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="d-grid gap-2 d-md-flex">
+                    <div sec:authorize="isAuthenticated()">
+                        <form th:if="${!esFavorito}" th:action="@{/favoritos/agregar}" method="post" class="d-inline">
+                            <input type="hidden" name="medicamentoId" th:value="${medicamento.id}" />
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="bi bi-star"></i> Añadir a Favoritos
+                            </button>
+                        </form>
+                        <form th:if="${esFavorito}" th:action="@{/favoritos/eliminar}" method="post" class="d-inline">
+                            <input type="hidden" name="medicamentoId" th:value="${medicamento.id}" />
+                            <button type="submit" class="btn btn-outline-warning btn-lg">
+                                <i class="bi bi-star-fill"></i> Quitar de Favoritos
+                            </button>
+                        </form>
+                    </div>
+                    <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="btn btn-primary btn-lg">
+                        Ver en tienda <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- ==        SECCIÓN DE TABLA COMPARATIVA DE PRECIOS         == -->
+        <!-- ========================================================== -->
+        <div class="mt-5" th:if="${comparativaPrecios != null and #lists.size(comparativaPrecios) > 1}">
+            <h2 class="mb-3">Comparar Precios</h2>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Farmacia</th>
+                        <th>Precio Internet</th>
+                        <th>Precio Físico</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Itera sobre la lista de medicamentos con el mismo nombre -->
+                    <tr th:each="comp : ${comparativaPrecios}">
+                        <td th:text="${comp.farmacia}" class="align-middle">Nombre Farmacia</td>
+                        <td th:text="${comp.precioInternet != null ? '$' + #numbers.formatDecimal(comp.precioInternet, 1, 'POINT', 0, 'COMMA') : 'No disponible'}" class="fw-bold text-success align-middle"></td>
+                        <td th:text="${comp.precioFarmacia != null ? '$' + #numbers.formatDecimal(comp.precioFarmacia, 1, 'POINT', 0, 'COMMA') : 'No disponible'}" class="align-middle"></td>
+                        <td class="text-end">
+                            <a th:if="${comp.url_producto}" th:href="${comp.url_producto}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                Ir a la tienda <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a th:href="@{/medicamentos/catalogo}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al Catálogo
+            </a>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
