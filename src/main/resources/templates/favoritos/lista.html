@@ -72,19 +72,19 @@
                     <!-- ========================================================== -->
 
                     <!-- Sección de Imagen -->
-                    <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none">
-                        <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                             th:src="${medicamento.imagen_url}" th:alt="${'Imagen de ' + medicamento.nombre}"
+                    <a th:if="${medicamento.urlProducto}" th:href="${medicamento.urlProducto}" target="_blank" class="text-decoration-none">
+                        <img th:if="${not #strings.isEmpty(medicamento.imagenUrl)}"
+                             th:src="${medicamento.imagenUrl}" th:alt="${'Imagen de ' + medicamento.nombre}"
                              class="card-img-top-custom" />
-                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder">
+                        <div th:unless="${not #strings.isEmpty(medicamento.imagenUrl)}" class="card-img-placeholder">
                             <i class="bi bi-image"></i>
                         </div>
                     </a>
-                    <div th:unless="${medicamento.url_producto}">
-                        <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                             th:src="${medicamento.imagen_url}" th:alt="${'Imagen de ' + medicamento.nombre}"
+                    <div th:unless="${medicamento.urlProducto}">
+                        <img th:if="${not #strings.isEmpty(medicamento.imagenUrl)}"
+                             th:src="${medicamento.imagenUrl}" th:alt="${'Imagen de ' + medicamento.nombre}"
                              class="card-img-top-custom" />
-                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder">
+                        <div th:unless="${not #strings.isEmpty(medicamento.imagenUrl)}" class="card-img-placeholder">
                             <i class="bi bi-image"></i>
                         </div>
                     </div>
@@ -92,8 +92,8 @@
                     <div class="card-body card-body-custom">
                         <div>
                             <h5 class="card-title card-title-custom">
-                                <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none text-dark" th:text="${medicamento.nombre}"></a>
-                                <span th:unless="${medicamento.url_producto}" th:text="${medicamento.nombre}"></span>
+                                <a th:if="${medicamento.urlProducto}" th:href="${medicamento.urlProducto}" target="_blank" class="text-decoration-none text-dark" th:text="${medicamento.nombre}"></a>
+                                <span th:unless="${medicamento.urlProducto}" th:text="${medicamento.nombre}"></span>
                             </h5>
                             <p class="card-text text-muted small" th:if="${medicamento.descripcion}" th:text="${#strings.abbreviate(medicamento.descripcion, 80)}"></p>
                         </div>
@@ -122,7 +122,7 @@
                                     </button>
                                 </form>
 
-                                <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
+                                <a th:if="${medicamento.urlProducto}" th:href="${medicamento.urlProducto}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
                                     Ver en tienda <i class="bi bi-box-arrow-up-right"></i>
                                 </a>
                             </div>

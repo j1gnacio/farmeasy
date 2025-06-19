@@ -14,11 +14,11 @@
         <div class="row">
             <!-- Columna de la imagen -->
             <div class="col-md-5 text-center">
-                <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                     th:src="${medicamento.imagen_url}"
+                <img th:if="${not #strings.isEmpty(medicamento.imagenUrl)}"
+                     th:src="${medicamento.imagenUrl}"
                      th:alt="${medicamento.nombre}"
                      class="img-fluid rounded shadow-sm" style="max-height: 400px;"/>
-                <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}"
+                <div th:unless="${not #strings.isEmpty(medicamento.imagenUrl)}"
                      class="d-flex align-items-center justify-content-center bg-light rounded shadow-sm"
                      style="height: 400px;">
                     <i class="bi bi-image" style="font-size: 5rem; color: #ccc;"></i>
@@ -62,7 +62,7 @@
                             </button>
                         </form>
                     </div>
-                    <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="btn btn-primary btn-lg">
+                    <a th:if="${medicamento.urlProducto}" th:href="${medicamento.urlProducto}" target="_blank" class="btn btn-primary btn-lg">
                         Ver en tienda <i class="bi bi-box-arrow-up-right"></i>
                     </a>
                 </div>
@@ -91,7 +91,7 @@
                         <td th:text="${comp.precioInternet != null ? '$' + #numbers.formatDecimal(comp.precioInternet, 1, 'POINT', 0, 'COMMA') : 'No disponible'}" class="fw-bold text-success align-middle"></td>
                         <td th:text="${comp.precioFarmacia != null ? '$' + #numbers.formatDecimal(comp.precioFarmacia, 1, 'POINT', 0, 'COMMA') : 'No disponible'}" class="align-middle"></td>
                         <td class="text-end">
-                            <a th:if="${comp.url_producto}" th:href="${comp.url_producto}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                            <a th:if="${comp.urlProducto}" th:href="${comp.urlProducto}" target="_blank" class="btn btn-sm btn-outline-secondary">
                                 Ir a la tienda <i class="bi bi-box-arrow-up-right"></i>
                             </a>
                         </td>

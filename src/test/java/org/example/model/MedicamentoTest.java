@@ -18,8 +18,8 @@ class MedicamentoTest {
         med.setPrecioInternet(2500.0);
         med.setPrecioFarmacia(3000.0);
         med.setFarmacia("Salcobrand");
-        med.setUrl_producto("http://example.com");
-        med.setImagen_url("http://example.com/img.jpg");
+        med.setUrlProducto("http://example.com");
+        med.setImagenUrl("http://example.com/img.jpg");
 
         // Assert
         assertEquals("med01", med.getId());
@@ -30,7 +30,7 @@ class MedicamentoTest {
         assertEquals(3000.0, med.getPrecioNormal()); // Usando tu getter manual
         assertEquals("Salcobrand", med.getFarmacia());
         assertEquals("http://example.com", med.getUrl()); // Usando tu getter manual
-        assertEquals("http://example.com/img.jpg", med.getImagen_url());
+        assertEquals("http://example.com/img.jpg", med.getImagenUrl());
     }
 
     @Test
