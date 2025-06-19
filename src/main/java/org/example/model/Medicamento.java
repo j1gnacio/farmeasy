@@ -49,4 +49,13 @@ public class Medicamento {
         this.url_producto = url_producto;
         this.farmacia = farmacia;
     }
+
+    public String getNombre() { return nombre;
+    }
+
+    public String getDescripcion() { return descripcion;
+    }
+
+    public String getFarmacia() { return farmacia;
+    }
 }

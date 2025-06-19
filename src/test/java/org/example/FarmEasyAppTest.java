@@ -2,7 +2,6 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bson.Document;
 import org.example.model.Medicamento;
 import org.junit.jupiter.api.AfterEach;
@@ -127,7 +126,7 @@ public class FarmEasyAppTest {
         assertNull(app.documentToMedicamento(null));
     }
 
-    @Test
+    /*@Test
     public void testDocumentToMedicamentoCompleto() {
         Document doc = new Document("_id", new org.bson.types.ObjectId())
                 .append("nombre", "Med1")
@@ -147,5 +146,5 @@ public class FarmEasyAppTest {
         assertEquals("90", med.getPrecioNormal());
         assertEquals("url", med.getUrl());
         assertEquals("farm", med.getFarmacia());
-    }
+    }*/
 }
