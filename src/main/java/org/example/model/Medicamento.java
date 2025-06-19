@@ -15,8 +15,8 @@ public class Medicamento {
     @Id
     private String id;
     private String nombre;
-    private Double precio_internet;
-    private Double precio_farmacia;
+    private Double precioInternet;
+    private Double precioFarmacia;
     private String descripcion;
     private String url_producto;
     private String imagen_url;
@@ -28,24 +28,24 @@ public class Medicamento {
     }
 
     public Double getPrecioInternet() {
-        return precio_internet;
+        return precioInternet;
     }
 
     public Double getPrecioNormal() {
-        return precio_farmacia;
+        return precioFarmacia;
     }
 
     public String getUrl() {
         return url_producto;
     }
 
-    public Medicamento(String id, String nombre, String dosis, String descripcion, Double precio_internet, Double precio_farmacia, String url_producto, String farmacia) {
+    public Medicamento(String id, String nombre, String dosis, String descripcion, Double PrecioInternet, Double PrecioFarmacia, String url_producto, String farmacia) {
         this.id = id;
         this.nombre = nombre;
         this.dosis = dosis;
         this.descripcion = descripcion;
-        this.precio_internet = precio_internet;
-        this.precio_farmacia = precio_farmacia;
+        this.precioInternet = PrecioInternet;
+        this.precioFarmacia = PrecioFarmacia;
         this.url_producto = url_producto;
         this.farmacia = farmacia;
     }
