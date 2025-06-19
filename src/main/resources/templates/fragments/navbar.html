@@ -32,6 +32,8 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
                         <!-- <li><a class="dropdown-item" href="#">Mi Perfil</a></li> -->
                         <!-- <li><hr class="dropdown-divider"></li> -->
+                        <li><a class="dropdown-item" th:href="@{/favoritos}">Mis Favoritos</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li>
                             <form th:action="@{/logout}" method="post" class="d-inline">
                                 <button type="submit" class="dropdown-item">Cerrar Sesión</button>
