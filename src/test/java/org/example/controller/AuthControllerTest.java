@@ -1,191 +1,112 @@
-//package org.example.controller;
-//
-//import org.example.model.Usuario;
-//import org.example.service.UsuarioService;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.MvcResult;
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-//import org.springframework.validation.BindingResult;
-//
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.doThrow;
-//import static org.mockito.Mockito.when;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//import org.springframework.security.test.context.support.WithMockUser;
-//import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-//
-//@WebMvcTest(AuthController.class)
-//public class AuthControllerTest {
-//
-//    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @MockBean
-//    private UsuarioService usuarioService;
-//
-//    /**
-//     * Prueba funcional para la página de login.
-//     * Verifica que la página se cargue correctamente y que los mensajes de error y logout se muestren.
-//     * Se ajusta para no esperar ModelAndView, sino verificar contenido y status.
-//     */
-//    @Test
-//    @WithMockUser
-//    public void testLoginPage() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.get("/login"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType("text/html;charset=UTF-8"))
-//                .andExpect(content().string(org.hamcrest.Matchers.containsString("Please sign in")));
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/login").param("error", "true"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string(org.hamcrest.Matchers.containsString("Usuario o contraseña incorrectos")));
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/login").param("logout", "true"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string(org.hamcrest.Matchers.containsString("Has cerrado sesión exitosamente")));
-//    }
-//
-//    /**
-//     * Prueba funcional para la página de registro.
-//     * Verifica que el modelo contenga un objeto Usuario para el formulario.
-//     */
-//    @Test
-//    @WithMockUser
-//    public void testRegistroPage() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.get("/registro"))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("auth/registro"))
-//                .andExpect(model().attributeExists("usuario"));
-//    }
-//
-//    /**
-//     * Prueba funcional para registrar un usuario con datos válidos.
-//     * Verifica que la redirección sea a la página de login con mensaje de éxito.
-//     */
-//    @Test
-//    @WithMockUser
-//    public void testRegistrarUsuario_Valid() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/registro")
-//                        .param("username", "usuario1")
-//                        .param("password", "password123")
-//                        .param("email", "usuario1@example.com")
-//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/login"))
-//                .andExpect(flash().attributeExists("successMessage"));
-//    }
-//
-//    /**
-//     * Prueba funcional para registrar un usuario con datos inválidos.
-//     * Verifica que se regrese al formulario con errores.
-//     */
-//    @Test
-//    @WithMockUser
-//    public void testRegistrarUsuario_Invalid() throws Exception {
-//        // Simular error de validación enviando datos vacíos
-//        mockMvc.perform(MockMvcRequestBuilders.post("/registro")
-//                        .param("username", "")
-//                        .param("password", "")
-//                        .param("email", "")
-//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("auth/registro"));
-//    }
-//    /**
-//     * Prueba funcional para manejar excepción durante el registro.
-//     * Verifica que se muestre el mensaje de error en el modelo.
-//     */
-//    @Test
-//    @WithMockUser
-//    public void testRegistrarUsuario_Exception() throws Exception {
-//        doThrow(new RuntimeException("Error al registrar usuario")).when(usuarioService).registrarUsuario(any(Usuario.class));
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/registro")
-//                        .param("username", "usuario2")
-//                        .param("password", "password123")
-//                        .param("email", "usuario2@example.com")
-//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("auth/registro"))
-//                .andExpect(model().attributeExists("errorMessage"));
-//    }
-//
-//    /**
-//     * Prueba funcional para validar que el nombre de usuario es obligatorio.
-//     */
-//    @Test
-//    @WithMockUser
-//    public void testRegistrarUsuario_UsernameRequired() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/registro")
-//                        .param("username", "")
-//                        .param("password", "password123")
-//                        .param("email", "usuario@example.com")
-//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("auth/registro"))
-//                .andExpect(model().attributeHasFieldErrors("usuario", "username"));
-//    }
-//
-//    /**
-//     * Prueba funcional para validar que el email es obligatorio y con formato correcto.
-//     */
-//    @Test
-//    @WithMockUser
-//    public void testRegistrarUsuario_EmailRequiredAndFormat() throws Exception {
-//        // Email vacío
-//        mockMvc.perform(MockMvcRequestBuilders.post("/registro")
-//                        .param("username", "usuario")
-//                        .param("password", "password123")
-//                        .param("email", "")
-//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("auth/registro"))
-//                .andExpect(model().attributeHasFieldErrors("usuario", "email"));
-//
-//        // Email con formato inválido
-//        mockMvc.perform(MockMvcRequestBuilders.post("/registro")
-//                        .param("username", "usuario")
-//                        .param("password", "password123")
-//                        .param("email", "emailinvalido")
-//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("auth/registro"))
-//                .andExpect(model().attributeHasFieldErrors("usuario", "email"));
-//    }
-//
-//    /**
-//     * Prueba funcional para validar que la contraseña es obligatoria y con longitud mínima.
-//     */
-//    @Test
-//    @WithMockUser
-//    public void testRegistrarUsuario_PasswordRequiredAndMinLength() throws Exception {
-//        // Contraseña vacía
-//        mockMvc.perform(MockMvcRequestBuilders.post("/registro")
-//                        .param("username", "usuario")
-//                        .param("password", "")
-//                        .param("email", "usuario@example.com")
-//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("auth/registro"))
-//                .andExpect(model().attributeHasFieldErrors("usuario", "password"));
-//
-//        // Contraseña muy corta
-//        mockMvc.perform(MockMvcRequestBuilders.post("/registro")
-//                        .param("username", "usuario")
-//                        .param("password", "123")
-//                        .param("email", "usuario@example.com")
-//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("auth/registro"))
-//                .andExpect(model().attributeHasFieldErrors("usuario", "password"));
-//    }
-//}
+package org.example.controller;
+
+import org.example.config.SecurityConfig;
+import org.example.model.Usuario;
+import org.example.security.UserDetailsServiceImpl;
+import org.example.service.UsuarioService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(AuthController.class)
+@Import(SecurityConfig.class)
+class AuthControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private UsuarioService usuarioService;
+
+    @MockBean
+    private UserDetailsServiceImpl userDetailsService;
+
+    // --- Tests para GET /login ---
+
+    @Test
+    void cuandoPideLoginPage_debeMostrarVistaLogin() throws Exception {
+        mockMvc.perform(get("/login"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("auth/login"));
+    }
+
+    @Test
+    void cuandoPideLoginPage_conParametroError_debeAñadirErrorMessageAlModelo() throws Exception {
+        mockMvc.perform(get("/login").param("error", "true"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("auth/login"))
+                .andExpect(model().attributeExists("errorMessage"));
+    }
+
+    // --- Tests para GET /registro ---
+
+    @Test
+    void cuandoPideRegistroPage_debeMostrarVistaRegistro() throws Exception {
+        mockMvc.perform(get("/registro"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("auth/registro"))
+                .andExpect(model().attributeExists("usuario")); // Verifica que se añade un objeto Usuario vacío al modelo
+    }
+
+    // --- Tests para POST /registro ---
+
+    @Test
+    void cuandoRegistraUsuario_conDatosValidos_debeRedirigirALoginConMensajeExito() throws Exception {
+        // Arrange
+        // Simulamos que el servicio de usuario guarda el objeto sin problemas y lo devuelve
+        when(usuarioService.registrarUsuario(any(Usuario.class))).thenReturn(new Usuario());
+
+        // Act & Assert
+        mockMvc.perform(post("/registro")
+                        .param("username", "nuevo_usuario")
+                        .param("email", "nuevo@email.com")
+                        .param("password", "password123")
+                        .with(csrf())) // No olvides el token CSRF para peticiones POST
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"))
+                .andExpect(flash().attribute("successMessage", "¡Registro exitoso! Por favor, inicia sesión."));
+    }
+
+    @Test
+    void cuandoRegistraUsuario_conDatosInvalidos_debeVolverARegistroConErrores() throws Exception {
+        // Act & Assert
+        // Enviamos un username demasiado corto para que falle la validación @Size(min=3)
+        mockMvc.perform(post("/registro")
+                        .param("username", "a")
+                        .param("email", "invalido") // Email inválido
+                        .param("password", "") // Contraseña vacía
+                        .with(csrf()))
+                .andExpect(status().isOk()) // Esperamos OK (200) porque no redirige, vuelve a mostrar la misma página
+                .andExpect(view().name("auth/registro"))
+                .andExpect(model().hasErrors()); // Verificamos que el modelo contiene errores de validación
+    }
+
+    @Test
+    void cuandoRegistraUsuario_yServicioLanzaExcepcion_debeVolverARegistroConMensajeError() throws Exception {
+        // Arrange
+        String mensajeError = "El email ya está registrado";
+        // Simulamos que el servicio lanza una excepción (ej. porque el email ya existe)
+        doThrow(new Exception(mensajeError)).when(usuarioService).registrarUsuario(any(Usuario.class));
+
+        // Act & Assert
+        mockMvc.perform(post("/registro")
+                        .param("username", "usuario_valido")
+                        .param("email", "repetido@email.com")
+                        .param("password", "password123")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("auth/registro"))
+                .andExpect(model().attribute("errorMessage", mensajeError));
+    }
+}
