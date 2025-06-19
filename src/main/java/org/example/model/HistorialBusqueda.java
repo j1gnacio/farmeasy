@@ -1,44 +1,34 @@
 package org.example.model;
 
-import java.util.Date;
-import java.util.UUID;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Document(collection = "historial_busquedas")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class HistorialBusqueda {
-    @Id
-    private String id = UUID.randomUUID().toString();
 
+    @Id
+    private String id;
+
+    // Término que el usuario escribió en la barra de búsqueda.
+    private String terminoBuscado;
+
+    // Fecha y hora en que se realizó la búsqueda.
+    private LocalDateTime fechaBusqueda;
+
+    // Referencia al usuario que hizo la búsqueda.
     @DBRef
     private Usuario usuario;
 
-    private Date fecha = new Date();
-
-    private String termino;
-
-    private String ciudad;
-
-    private String direccion;
-
-    @DBRef
-    private Farmacia farmacia;
-
-    public HistorialBusqueda(Usuario usuario, String termino, String ciudad, String direccion, Farmacia farmacia) {
+    public HistorialBusqueda(String terminoBuscado, Usuario usuario) {
+        this.terminoBuscado = terminoBuscado;
         this.usuario = usuario;
-        this.termino = termino;
-        this.ciudad = ciudad;
-        this.direccion = direccion;
-        this.farmacia = farmacia;
-        this.fecha = new Date();
+        this.fechaBusqueda = LocalDateTime.now();
     }
 }
