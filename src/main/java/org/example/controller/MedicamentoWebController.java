@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable; // <-- Importación necesaria
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,22 +34,10 @@ public class MedicamentoWebController {
                                   @RequestParam(required = false) Double longitud) {
         List<Medicamento> medicamentos;
         if (busqueda != null && !busqueda.isEmpty()) {
-            if (latitud != null && longitud != null) {
-                medicamentos = medicamentoService.buscarPorNombreYUbicacion(busqueda, latitud, longitud);
-                model.addAttribute("latitud", latitud);
-                model.addAttribute("longitud", longitud);
-            } else {
-                medicamentos = medicamentoService.buscarPorNombre(busqueda);
-            }
+            medicamentos = medicamentoService.buscarPorNombre(busqueda);
             model.addAttribute("busquedaActual", busqueda);
         } else {
-            if (latitud != null && longitud != null) {
-                medicamentos = medicamentoService.buscarPorUbicacion(latitud, longitud);
-                model.addAttribute("latitud", latitud);
-                model.addAttribute("longitud", longitud);
-            } else {
-                medicamentos = medicamentoService.obtenerTodos();
-            }
+            medicamentos = medicamentoService.obtenerTodos();
         }
         model.addAttribute("medicamentos", medicamentos);
 
@@ -75,6 +64,31 @@ public class MedicamentoWebController {
             model.addAttribute("favoritosIds", Collections.emptySet());
         }
 
-        return "medicamentos/catalogo"; // Devolvemos el nombre de la vista
+        return "medicamentos/catalogo";
+    }
+
+    // --- MÉTODO NUEVO PARA LA PÁGINA DE DETALLE ---
+    @GetMapping("/{id}")
+    public String verDetalleMedicamento(@PathVariable("id") String id, Model model) {
+
+        // 1. Busca el medicamento principal por su ID. Si no lo encuentra, podría lanzar un error.
+        Medicamento medicamentoPrincipal = medicamentoService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Medicamento no encontrado con ID: " + id));
+        model.addAttribute("medicamento", medicamentoPrincipal);
+
+        // 2. Busca otros medicamentos con el mismo nombre para la tabla de comparación.
+        List<Medicamento> comparativa = medicamentoService.buscarPorNombre(medicamentoPrincipal.getNombre());
+        model.addAttribute("comparativaPrecios", comparativa);
+
+        // 3. Reutilizamos la lógica para saber si este medicamento es favorito y mostrar el botón correcto.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            String username = auth.getName();
+            // Pasamos un booleano simple a la vista para facilitar la comprobación
+            boolean esFavorito = favoritoService.esFavorito(username, id);
+            model.addAttribute("esFavorito", esFavorito);
+        }
+
+        return "medicamentos/detalle"; // Renderiza la nueva vista que vamos a crear
     }
 }

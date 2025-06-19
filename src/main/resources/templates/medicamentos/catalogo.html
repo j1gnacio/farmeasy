@@ -126,8 +126,7 @@
                     <div class="card-body card-body-custom">
                         <div>
                             <h5 class="card-title card-title-custom">
-                                <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none text-dark" th:text="${medicamento.nombre}"></a>
-                                <span th:unless="${medicamento.url_producto}" th:text="${medicamento.nombre}"></span>
+                                <a th:href="@{/medicamentos/{id}(id=${medicamento.id})}" class="text-decoration-none text-dark" th:text="${medicamento.nombre}"></a>
                             </h5>
                             <p class="card-text text-muted small" th:if="${medicamento.descripcion}" th:text="${#strings.abbreviate(medicamento.descripcion, 80)}"></p>
                         </div>

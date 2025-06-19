@@ -1,9 +1,8 @@
 package org.example.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.example.model.Farmacia;
 import org.example.model.Medicamento;
 import org.example.repository.MedicamentoRepository;
 import org.springframework.stereotype.Service;
@@ -12,15 +11,24 @@ import org.springframework.stereotype.Service;
 public class MedicamentoService {
 
     private final MedicamentoRepository medicamentoRepository;
-    private final FarmaciaService farmaciaService;
 
-    public MedicamentoService(MedicamentoRepository medicamentoRepository, FarmaciaService farmaciaService) {
+    // Se elimina la dependencia de FarmaciaService para simplificar el proyecto.
+    public MedicamentoService(MedicamentoRepository medicamentoRepository) {
         this.medicamentoRepository = medicamentoRepository;
-        this.farmaciaService = farmaciaService;
     }
 
     public List<Medicamento> obtenerTodos() {
         return medicamentoRepository.findAll();
+    }
+
+    /**
+     * Busca un medicamento específico por su ID.
+     * Devuelve un Optional, que puede contener el medicamento si se encuentra, o estar vacío si no.
+     * @param id El ID del medicamento a buscar.
+     * @return Un Optional<Medicamento>.
+     */
+    public Optional<Medicamento> findById(String id) {
+        return medicamentoRepository.findById(id);
     }
 
     public Medicamento guardar(Medicamento medicamento) {
@@ -31,31 +39,4 @@ public class MedicamentoService {
         return medicamentoRepository.findByNombreContainingIgnoreCase(nombre);
     }
 
-    public List<Medicamento> buscarPorFarmacia(String farmacia) {
-        return medicamentoRepository.findByFarmaciaIgnoreCase(farmacia);
-    }
-
-    public List<Medicamento> buscarPorUbicacion(double latitud, double longitud) {
-        // Buscar farmacias cercanas en un radio de 5 km (5000 metros)
-        List<Farmacia> farmaciasCercanas = farmaciaService.buscarFarmaciasCercanas(latitud, longitud, 5000);
-        List<Medicamento> medicamentos = new ArrayList<>();
-        for (Farmacia farmacia : farmaciasCercanas) {
-            if (farmacia.getListaMedicamentos() != null) {
-                medicamentos.addAll(farmacia.getListaMedicamentos());
-            }
-        }
-        return medicamentos;
-    }
-
-    public List<Medicamento> buscarPorNombreYUbicacion(String nombre, double latitud, double longitud) {
-        List<Medicamento> medicamentosPorNombre = buscarPorNombre(nombre);
-        List<Medicamento> medicamentosPorUbicacion = buscarPorUbicacion(latitud, longitud);
-        List<Medicamento> resultado = new ArrayList<>();
-        for (Medicamento med : medicamentosPorNombre) {
-            if (medicamentosPorUbicacion.contains(med)) {
-                resultado.add(med);
-            }
-        }
-        return resultado;
-    }
 }
