@@ -18,6 +18,19 @@
         <java.version>17</java.version>
         <!-- Propiedad para la versión de JaCoCo -->
         <jacoco.version>0.8.11</jacoco.version>
+
+        <!-- ========================================================== -->
+        <!-- ==        PROPIEDADES PARA SONARQUBE          == -->
+        <!-- ========================================================== -->
+        <!-- 1. Propiedades para SonarQube -->
+        <sonar.projectKey>farmeasy_project</sonar.projectKey>
+        <sonar.projectName>FarmEasy</sonar.projectName>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <!-- ¡DEBES REEMPLAZAR ESTA LÍNEA CON EL TOKEN QUE GENERES! -->
+        <sonar.login>sqp_f1e499449d31c11c3895a2d08a120f3810345db0</sonar.login>
+
+        <!-- 2. Propiedad que le dice a Sonar dónde encontrar el informe de cobertura de JaCoCo -->
+        <sonar.coverage.jacoco.xmlReportPath>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPath>
     </properties>
 
     <dependencies>
@@ -113,6 +126,13 @@
                 </executions>
             </plugin>
             <!-- ======================================= -->
+            <!-- ==         PLUGIN DE SONARQUBE         == -->
+            <!-- ======================================= -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.11.0.3922</version>
+            </plugin>
 
         </plugins>
     </build>
