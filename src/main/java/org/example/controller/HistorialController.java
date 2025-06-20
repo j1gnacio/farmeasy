@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.config.ViewNames;
 import org.example.model.HistorialBusqueda;
 import org.example.service.HistorialBusquedaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +17,14 @@ public class HistorialController {
     @Autowired
     private HistorialBusquedaService historialService;
 
-    @GetMapping("/historial") // <-- ¡Esta es la anotación clave que soluciona el error!
+    @GetMapping(ViewNames.HISTORIAL_URL)
     public String verHistorial(Model model, Principal principal) {
-        // 1. Verifica si el usuario está logueado
         if (principal == null) {
-            return "redirect:/login";
+            return ViewNames.REDIRECT_LOGIN;
         }
-
-        // 2. Obtiene el historial del usuario logueado
         String username = principal.getName();
         List<HistorialBusqueda> historial = historialService.obtenerHistorialPorUsuario(username);
-
-        // 3. Pasa la lista del historial a la vista
         model.addAttribute("historial", historial);
-
-        return "historial/lista";
+        return ViewNames.HISTORIAL_VIEW;
     }
 }

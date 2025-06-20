@@ -42,14 +42,14 @@ public class Medicamento {
         return urlProducto;
     }
 
-    public Medicamento(String id, String nombre, String dosis, String descripcion, Double PrecioInternet, Double PrecioFarmacia, String url_producto, String farmacia) {
+    public Medicamento(String id, String nombre, String dosis, String descripcion, Double precioInternet, Double precioFarmacia, String urlProducto, String farmacia) {
         this.id = id;
         this.nombre = nombre;
         this.dosis = dosis;
         this.descripcion = descripcion;
-        this.precioInternet = PrecioInternet;
-        this.precioFarmacia = PrecioFarmacia;
-        this.urlProducto = url_producto;
+        this.precioInternet = precioInternet;
+        this.precioFarmacia = precioFarmacia;
+        this.urlProducto = urlProducto;
         this.farmacia = farmacia;
     }
 

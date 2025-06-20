@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.config.SecurityConfig;
+import org.example.config.ViewNames; // <-- Importamos las constantes
 import org.example.model.Usuario;
 import org.example.security.UserDetailsServiceImpl;
 import org.example.service.UsuarioService;
@@ -25,88 +26,72 @@ class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private UsuarioService usuarioService;
-
     @MockBean
     private UserDetailsServiceImpl userDetailsService;
 
-    // --- Tests para GET /login ---
-
     @Test
     void cuandoPideLoginPage_debeMostrarVistaLogin() throws Exception {
-        mockMvc.perform(get("/login"))
+        mockMvc.perform(get(ViewNames.LOGIN_URL)) // <-- CORREGIDO
                 .andExpect(status().isOk())
-                .andExpect(view().name("auth/login"));
+                .andExpect(view().name(ViewNames.LOGIN_VIEW)); // <-- CORREGIDO
     }
 
     @Test
     void cuandoPideLoginPage_conParametroError_debeAñadirErrorMessageAlModelo() throws Exception {
-        mockMvc.perform(get("/login").param("error", "true"))
+        mockMvc.perform(get(ViewNames.LOGIN_URL).param("error", "true")) // <-- CORREGIDO
                 .andExpect(status().isOk())
-                .andExpect(view().name("auth/login"))
+                .andExpect(view().name(ViewNames.LOGIN_VIEW)) // <-- CORREGIDO
                 .andExpect(model().attributeExists("errorMessage"));
     }
 
-    // --- Tests para GET /registro ---
-
     @Test
     void cuandoPideRegistroPage_debeMostrarVistaRegistro() throws Exception {
-        mockMvc.perform(get("/registro"))
+        mockMvc.perform(get(ViewNames.REGISTRO_URL)) // <-- CORREGIDO
                 .andExpect(status().isOk())
-                .andExpect(view().name("auth/registro"))
-                .andExpect(model().attributeExists("usuario")); // Verifica que se añade un objeto Usuario vacío al modelo
+                .andExpect(view().name(ViewNames.REGISTRO_VIEW)) // <-- CORREGIDO
+                .andExpect(model().attributeExists("usuario"));
     }
-
-    // --- Tests para POST /registro ---
 
     @Test
     void cuandoRegistraUsuario_conDatosValidos_debeRedirigirALoginConMensajeExito() throws Exception {
-        // Arrange
-        // Simulamos que el servicio de usuario guarda el objeto sin problemas y lo devuelve
         when(usuarioService.registrarUsuario(any(Usuario.class))).thenReturn(new Usuario());
 
-        // Act & Assert
-        mockMvc.perform(post("/registro")
+        mockMvc.perform(post(ViewNames.REGISTRO_URL) // <-- CORREGIDO
                         .param("username", "nuevo_usuario")
                         .param("email", "nuevo@email.com")
                         .param("password", "password123")
-                        .with(csrf())) // No olvides el token CSRF para peticiones POST
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"))
+                .andExpect(redirectedUrl(ViewNames.LOGIN_URL)) // <-- CORREGIDO
                 .andExpect(flash().attribute("successMessage", "¡Registro exitoso! Por favor, inicia sesión."));
     }
 
     @Test
     void cuandoRegistraUsuario_conDatosInvalidos_debeVolverARegistroConErrores() throws Exception {
-        // Act & Assert
-        // Enviamos un username demasiado corto para que falle la validación @Size(min=3)
-        mockMvc.perform(post("/registro")
+        mockMvc.perform(post(ViewNames.REGISTRO_URL) // <-- CORREGIDO
                         .param("username", "a")
-                        .param("email", "invalido") // Email inválido
-                        .param("password", "") // Contraseña vacía
+                        .param("email", "invalido")
+                        .param("password", "")
                         .with(csrf()))
-                .andExpect(status().isOk()) // Esperamos OK (200) porque no redirige, vuelve a mostrar la misma página
-                .andExpect(view().name("auth/registro"))
-                .andExpect(model().hasErrors()); // Verificamos que el modelo contiene errores de validación
+                .andExpect(status().isOk())
+                .andExpect(view().name(ViewNames.REGISTRO_VIEW)) // <-- CORREGIDO
+                .andExpect(model().hasErrors());
     }
 
     @Test
     void cuandoRegistraUsuario_yServicioLanzaExcepcion_debeVolverARegistroConMensajeError() throws Exception {
-        // Arrange
         String mensajeError = "El email ya está registrado";
-        // Simulamos que el servicio lanza una excepción (ej. porque el email ya existe)
         doThrow(new Exception(mensajeError)).when(usuarioService).registrarUsuario(any(Usuario.class));
 
-        // Act & Assert
-        mockMvc.perform(post("/registro")
+        mockMvc.perform(post(ViewNames.REGISTRO_URL) // <-- CORREGIDO
                         .param("username", "usuario_valido")
                         .param("email", "repetido@email.com")
                         .param("password", "password123")
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("auth/registro"))
+                .andExpect(view().name(ViewNames.REGISTRO_VIEW)) // <-- CORREGIDO
                 .andExpect(model().attribute("errorMessage", mensajeError));
     }
 }

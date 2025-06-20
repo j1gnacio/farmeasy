@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.config.SecurityConfig;
+import org.example.config.ViewNames; // <-- Importamos las constantes
 import org.example.security.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +14,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest(HomeController.class) // Enfocamos el test solo en HomeController
-@Import(SecurityConfig.class) // Importamos la configuración de seguridad
+@WebMvcTest(HomeController.class)
+@Import(SecurityConfig.class)
 class HomeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    // Aunque HomeController no usa UserDetailsService, lo necesitamos
-    // porque importamos SecurityConfig, que sí lo requiere.
     @MockBean
     private UserDetailsServiceImpl userDetailsService;
 
     @Test
     void cuandoPideHomePage_debeDevolverVistaIndex() throws Exception {
-        // Act & Assert
-        // Hacemos una petición GET a la raíz "/"
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk()) // Esperamos que la respuesta sea 200 OK
-                .andExpect(view().name("index")); // Esperamos que se renderice la vista "index"
+        mockMvc.perform(get(ViewNames.ROOT_URL)) // <-- CORREGIDO
+                .andExpect(status().isOk())
+                .andExpect(view().name(ViewNames.INDEX_VIEW)); // <-- CORREGIDO
     }
 }
