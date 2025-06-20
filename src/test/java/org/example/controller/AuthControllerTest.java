@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.config.SecurityConfig;
 import org.example.config.ViewNames; // <-- Importamos las constantes
+import org.example.exception.RegistroException;
 import org.example.model.Usuario;
 import org.example.security.UserDetailsServiceImpl;
 import org.example.service.UsuarioService;
@@ -82,16 +83,19 @@ class AuthControllerTest {
 
     @Test
     void cuandoRegistraUsuario_yServicioLanzaExcepcion_debeVolverARegistroConMensajeError() throws Exception {
+        // Arrange
         String mensajeError = "El email ya está registrado";
-        doThrow(new Exception(mensajeError)).when(usuarioService).registrarUsuario(any(Usuario.class));
 
-        mockMvc.perform(post(ViewNames.REGISTRO_URL) // <-- CORREGIDO
+        doThrow(new RegistroException(mensajeError)).when(usuarioService).registrarUsuario(any(Usuario.class));
+
+        // Act & Assert (el resto del test se mantiene igual)
+        mockMvc.perform(post(ViewNames.REGISTRO_URL)
                         .param("username", "usuario_valido")
                         .param("email", "repetido@email.com")
                         .param("password", "password123")
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.REGISTRO_VIEW)) // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.REGISTRO_VIEW))
                 .andExpect(model().attribute("errorMessage", mensajeError));
     }
 }

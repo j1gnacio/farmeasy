@@ -2,6 +2,7 @@ package org.example.controller;
 
 import jakarta.validation.Valid;
 import org.example.config.ViewNames;
+import org.example.exception.RegistroException; // <-- Importación nueva
 import org.example.model.Usuario;
 import org.example.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class AuthController {
             usuarioService.registrarUsuario(usuario);
             redirectAttributes.addFlashAttribute("successMessage", "¡Registro exitoso! Por favor, inicia sesión.");
             return ViewNames.REDIRECT_LOGIN;
-        } catch (Exception e) {
+        } catch (RegistroException e) { // <-- Se captura la excepción específica
             model.addAttribute("errorMessage", e.getMessage());
             return ViewNames.REGISTRO_VIEW;
         }

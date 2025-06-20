@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.exception.RegistroException; // <-- Importación nueva
 import org.example.model.Usuario;
 import org.example.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +26,21 @@ public class UsuarioService {
         return usuarioRepository.findByUsername(username);
     }
 
-    public Usuario registrarUsuario(Usuario usuario) throws Exception {
+    public Usuario registrarUsuario(Usuario usuario) { // Ya no es necesario 'throws Exception'
         if (usuarioRepository.existsByUsername(usuario.getUsername())) {
-            throw new Exception("El nombre de usuario ya existe: " + usuario.getUsername());
+            // Lanza la nueva excepción específica
+            throw new RegistroException("El nombre de usuario ya existe: " + usuario.getUsername());
         }
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new Exception("El email ya está registrado: " + usuario.getEmail());
+            // Lanza la nueva excepción específica
+            throw new RegistroException("El email ya está registrado: " + usuario.getEmail());
         }
 
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setUsername(usuario.getUsername());
         nuevoUsuario.setEmail(usuario.getEmail());
         nuevoUsuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        nuevoUsuario.setRoles(Collections.singleton("ROLE_USER")); // Rol por defecto
+        nuevoUsuario.setRoles(Collections.singleton("ROLE_USER"));
         nuevoUsuario.setEnabled(true);
 
         return usuarioRepository.save(nuevoUsuario);
