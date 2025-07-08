@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.exception.RegistroException; // <-- Importación nueva
+import org.example.exception.RegistroException;
 import org.example.model.Usuario;
 import org.example.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Optional;
 
+/**
+ * Servicio para gestionar la lógica de negocio de los usuarios.
+ */
 @Service
 public class UsuarioService {
 
@@ -22,11 +25,24 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Busca un usuario por su nombre de usuario.
+     *
+     * @param username El nombre de usuario a buscar.
+     * @return Un Optional que contiene al usuario si se encuentra.
+     */
     public Optional<Usuario> findByUsername(String username) {
         return usuarioRepository.findByUsername(username);
     }
 
-    public Usuario registrarUsuario(Usuario usuario) { // Ya no es necesario 'throws Exception'
+    /**
+     * Registra un nuevo usuario en el sistema.
+     *
+     * @param usuario El usuario a registrar.
+     * @return El usuario registrado.
+     * @throws RegistroException si el nombre de usuario o el email ya existen.
+     */
+    public Usuario registrarUsuario(Usuario usuario) {
         if (usuarioRepository.existsByUsername(usuario.getUsername())) {
             // Lanza la nueva excepción específica
             throw new RegistroException("El nombre de usuario ya existe: " + usuario.getUsername());

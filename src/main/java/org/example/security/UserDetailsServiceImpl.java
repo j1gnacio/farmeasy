@@ -14,12 +14,22 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Implementación de UserDetailsService para cargar los detalles del usuario desde la base de datos.
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    /**
+     * Carga un usuario por su nombre de usuario.
+     *
+     * @param username El nombre de usuario.
+     * @return Un objeto UserDetails con la información del usuario.
+     * @throws UsernameNotFoundException si el usuario no se encuentra.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByUsername(username)

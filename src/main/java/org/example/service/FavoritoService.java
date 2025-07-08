@@ -16,6 +16,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio para gestionar la lógica de negocio de los medicamentos favoritos.
+ */
 @Service
 public class FavoritoService {
 
@@ -28,6 +31,13 @@ public class FavoritoService {
     @Autowired
     private MedicamentoRepository medicamentoRepository;
 
+    /**
+     * Agrega un medicamento a la lista de favoritos de un usuario.
+     *
+     * @param username El nombre de usuario.
+     * @param medicamentoId El ID del medicamento.
+     * @throws IllegalStateException si el medicamento ya es un favorito.
+     */
     @Transactional
     public void agregarFavorito(String username, String medicamentoId) {
         // 1. Buscar el usuario y el medicamento
@@ -51,6 +61,12 @@ public class FavoritoService {
         usuarioRepository.save(usuario);
     }
 
+    /**
+     * Elimina un medicamento de la lista de favoritos de un usuario.
+     *
+     * @param username El nombre de usuario.
+     * @param medicamentoId El ID del medicamento.
+     */
     @Transactional
     public void eliminarFavorito(String username, String medicamentoId) {
         // 1. Buscar el usuario
@@ -65,12 +81,25 @@ public class FavoritoService {
         usuarioRepository.save(usuario);
     }
 
+    /**
+     * Obtiene todos los favoritos de un usuario.
+     *
+     * @param username El nombre de usuario.
+     * @return Una lista de los favoritos del usuario.
+     */
     public List<Favorito> obtenerFavoritosPorUsuario(String username) {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
         return favoritoRepository.findByUsuarioId(usuario.getId());
     }
 
+    /**
+     * Verifica si un medicamento es favorito de un usuario.
+     *
+     * @param username El nombre de usuario.
+     * @param medicamentoId El ID del medicamento.
+     * @return true si es un favorito, false en caso contrario.
+     */
     public boolean esFavorito(String username, String medicamentoId) {
         // Método útil para la vista, para saber si mostrar "Agregar" o "Eliminar"
         return usuarioRepository.findByUsername(username)
@@ -79,6 +108,12 @@ public class FavoritoService {
     }
 
 
+    /**
+     * Obtiene los IDs de todos los medicamentos favoritos de un usuario.
+     *
+     * @param username El nombre de usuario.
+     * @return Un conjunto de IDs de medicamentos.
+     */
     public Set<String> obtenerIdsMedicamentosFavoritos(String username) {
         // Obtenemos al usuario
         Usuario usuario = usuarioRepository.findByUsername(username)

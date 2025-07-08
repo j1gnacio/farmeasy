@@ -6,6 +6,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Representa la relación de un medicamento marcado como favorito por un usuario.
+ */
 @Document(collection = "favoritos")
 @Data
 @NoArgsConstructor
@@ -14,12 +17,24 @@ public class Favorito {
     @Id
     private String id;
 
-    @DBRef // Referencia al documento del Usuario
+    /**
+     * Referencia al documento del Usuario que marcó el medicamento como favorito.
+     */
+    @DBRef
     private Usuario usuario;
 
-    @DBRef // Referencia al documento del Medicamento
+    /**
+     * Referencia al documento del Medicamento que fue marcado como favorito.
+     */
+    @DBRef
     private Medicamento medicamento;
 
+    /**
+     * Constructor para crear una nueva instancia de Favorito.
+     *
+     * @param usuario El usuario que marca el favorito.
+     * @param medicamento El medicamento que se marca como favorito.
+     */
     public Favorito(Usuario usuario, Medicamento medicamento) {
         this.usuario = usuario;
         this.medicamento = medicamento;

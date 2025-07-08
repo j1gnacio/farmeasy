@@ -19,6 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Controlador web para gestionar las interacciones de los usuarios con los medicamentos.
+ * Maneja la visualización del catálogo y los detalles de los medicamentos.
+ */
 @Controller
 @RequestMapping(ViewNames.MEDICAMENTOS_URL)
 public class MedicamentoWebController {
@@ -30,7 +34,14 @@ public class MedicamentoWebController {
     @Autowired
     private HistorialBusquedaService historialBusquedaService;
 
-    @GetMapping("/catalogo") // La ruta es relativa a /medicamentos
+    /**
+     * Muestra el catálogo de medicamentos.
+     *
+     * @param model El modelo para pasar datos a la vista.
+     * @param busqueda El término de búsqueda opcional.
+     * @return La vista del catálogo de medicamentos.
+     */
+    @GetMapping("/catalogo")
     public String mostrarCatalogo(Model model,
                                   @RequestParam(required = false) String busqueda) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -58,6 +69,13 @@ public class MedicamentoWebController {
         return ViewNames.CATALOGO_VIEW;
     }
 
+    /**
+     * Muestra la página de detalles de un medicamento.
+     *
+     * @param id El ID del medicamento a mostrar.
+     * @param model El modelo para pasar datos a la vista.
+     * @return La vista de detalle del medicamento.
+     */
     @GetMapping("/{id}")
     public String verDetalleMedicamento(@PathVariable("id") String id, Model model) {
         Medicamento medicamentoPrincipal = medicamentoService.findById(id)

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Servicio para gestionar el historial de búsqueda de los usuarios.
+ */
 @Service
 public class HistorialBusquedaService {
 
@@ -22,6 +25,7 @@ public class HistorialBusquedaService {
 
     /**
      * Guarda un nuevo registro de búsqueda para un usuario.
+     *
      * @param termino El texto que buscó el usuario.
      * @param username El nombre de usuario del usuario logueado.
      */
@@ -40,6 +44,7 @@ public class HistorialBusquedaService {
 
     /**
      * Obtiene el historial de búsqueda de un usuario.
+     *
      * @param username El nombre del usuario.
      * @return Una lista con su historial, ordenado del más reciente al más antiguo.
      */
