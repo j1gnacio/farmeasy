@@ -21,6 +21,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Pruebas unitarias para el controlador de autenticacion (AuthController).
+ * Verifica el comportamiento de los endpoints de login y registro.
+ */
 @WebMvcTest(AuthController.class)
 @Import(SecurityConfig.class)
 class AuthControllerTest {
@@ -32,60 +36,87 @@ class AuthControllerTest {
     @MockBean
     private UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * Verifica que la pagina de login se muestra correctamente.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     void cuandoPideLoginPage_debeMostrarVistaLogin() throws Exception {
-        mockMvc.perform(get(ViewNames.LOGIN_URL)) // <-- CORREGIDO
+        mockMvc.perform(get(ViewNames.LOGIN_URL))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.LOGIN_VIEW)); // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.LOGIN_VIEW));
     }
 
+    /**
+     * Verifica que la pagina de login muestra un mensaje de error cuando
+     * se le pasa el parametro 'error'.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
-    void cuandoPideLoginPage_conParametroError_debeAñadirErrorMessageAlModelo() throws Exception {
-        mockMvc.perform(get(ViewNames.LOGIN_URL).param("error", "true")) // <-- CORREGIDO
+    void cuandoPideLoginPage_conParametroError_debeAnadirErrorMessageAlModelo() throws Exception {
+        mockMvc.perform(get(ViewNames.LOGIN_URL).param("error", "true"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.LOGIN_VIEW)) // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.LOGIN_VIEW))
                 .andExpect(model().attributeExists("errorMessage"));
     }
 
+    /**
+     * Verifica que la pagina de registro se muestra correctamente.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     void cuandoPideRegistroPage_debeMostrarVistaRegistro() throws Exception {
-        mockMvc.perform(get(ViewNames.REGISTRO_URL)) // <-- CORREGIDO
+        mockMvc.perform(get(ViewNames.REGISTRO_URL))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.REGISTRO_VIEW)) // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.REGISTRO_VIEW))
                 .andExpect(model().attributeExists("usuario"));
     }
 
+    /**
+     * Verifica que un usuario con datos validos se registra correctamente
+     * y es redirigido a la pagina de login.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     void cuandoRegistraUsuario_conDatosValidos_debeRedirigirALoginConMensajeExito() throws Exception {
         when(usuarioService.registrarUsuario(any(Usuario.class))).thenReturn(new Usuario());
 
-        mockMvc.perform(post(ViewNames.REGISTRO_URL) // <-- CORREGIDO
+        mockMvc.perform(post(ViewNames.REGISTRO_URL)
                         .param("username", "nuevo_usuario")
                         .param("email", "nuevo@email.com")
                         .param("password", "password123")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(ViewNames.LOGIN_URL)) // <-- CORREGIDO
+                .andExpect(redirectedUrl(ViewNames.LOGIN_URL))
                 .andExpect(flash().attribute("successMessage", "¡Registro exitoso! Por favor, inicia sesión."));
     }
 
+    /**
+     * Verifica que el registro falla con datos invalidos y devuelve
+     * a la pagina de registro con errores.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     void cuandoRegistraUsuario_conDatosInvalidos_debeVolverARegistroConErrores() throws Exception {
-        mockMvc.perform(post(ViewNames.REGISTRO_URL) // <-- CORREGIDO
+        mockMvc.perform(post(ViewNames.REGISTRO_URL)
                         .param("username", "a")
                         .param("email", "invalido")
                         .param("password", "")
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.REGISTRO_VIEW)) // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.REGISTRO_VIEW))
                 .andExpect(model().hasErrors());
     }
 
+    /**
+     * Verifica que si el servicio de registro lanza una excepcion,
+     * se muestra un mensaje de error en la pagina de registro.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     void cuandoRegistraUsuario_yServicioLanzaExcepcion_debeVolverARegistroConMensajeError() throws Exception {
         // Arrange
         String mensajeError = "El email ya está registrado";
-
         doThrow(new RegistroException(mensajeError)).when(usuarioService).registrarUsuario(any(Usuario.class));
 
         // Act & Assert (el resto del test se mantiene igual)

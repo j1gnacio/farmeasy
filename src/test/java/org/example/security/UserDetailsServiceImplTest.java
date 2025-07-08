@@ -17,6 +17,10 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+/**
+ * Pruebas unitarias para UserDetailsServiceImpl.
+ * Verifica la logica de carga de detalles de usuario para Spring Security.
+ */
 @ExtendWith(MockitoExtension.class)
 class UserDetailsServiceImplTest {
 
@@ -28,9 +32,11 @@ class UserDetailsServiceImplTest {
 
     private Usuario usuario;
 
+    /**
+     * Prepara un usuario de prueba antes de cada test.
+     */
     @BeforeEach
     void setUp() {
-        // Preparamos un usuario de prueba
         usuario = new Usuario();
         usuario.setUsername("testuser");
         usuario.setPassword("encodedPassword");
@@ -38,25 +44,19 @@ class UserDetailsServiceImplTest {
         usuario.setEnabled(true);
     }
 
-    // --- TEST 1: El caso de éxito, cuando el usuario es encontrado ---
+    /**
+     * Prueba que los detalles de un usuario existente se cargan correctamente.
+     */
     @Test
     void cuandoCargaUsuarioPorUsername_yUsuarioExiste_debeDevolverUserDetails() {
-        // Arrange
-        // Simulamos que el repositorio encuentra al usuario "testuser"
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
 
-        // Act
-        // Llamamos al método que queremos probar
         UserDetails userDetails = userDetailsService.loadUserByUsername("testuser");
 
-        // Assert
-        // Verificamos que los datos del UserDetails son los correctos
         assertNotNull(userDetails);
         assertEquals("testuser", userDetails.getUsername());
         assertEquals("encodedPassword", userDetails.getPassword());
         assertTrue(userDetails.isEnabled());
-
-        // Verificamos que tiene la cantidad correcta de roles/autoridades
         assertEquals(2, userDetails.getAuthorities().size());
         assertTrue(userDetails.getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_USER")));
@@ -64,20 +64,17 @@ class UserDetailsServiceImplTest {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN")));
     }
 
-    // --- TEST 2: El caso de error, cuando el usuario NO es encontrado ---
+    /**
+     * Prueba que se lanza una excepcion al intentar cargar un usuario que no existe.
+     */
     @Test
     void cuandoCargaUsuarioPorUsername_yUsuarioNoExiste_debeLanzarUsernameNotFoundException() {
-        // Arrange
-        // Simulamos que el repositorio NO encuentra al usuario y devuelve un Optional vacío
         when(usuarioRepository.findByUsername("nouser")).thenReturn(Optional.empty());
 
-        // Act & Assert
-        // Verificamos que al llamar al método, se lanza la excepción esperada
         UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> {
             userDetailsService.loadUserByUsername("nouser");
         });
 
-        // Verificamos que el mensaje de la excepción es el correcto
         assertEquals("Usuario no encontrado: nouser", exception.getMessage());
     }
 }

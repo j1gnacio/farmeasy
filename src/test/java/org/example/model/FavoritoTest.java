@@ -3,8 +3,15 @@ package org.example.model;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Pruebas unitarias para la clase de modelo Favorito.
+ * Verifica el constructor, los getters/setters y los metodos equals, hashCode y toString.
+ */
 class FavoritoTest {
 
+    /**
+     * Prueba el constructor y los getters de la clase Favorito.
+     */
     @Test
     void testConstructorYGetters() {
         // Arrange
@@ -21,6 +28,9 @@ class FavoritoTest {
         assertEquals(medicamento, favorito.getMedicamento());
     }
 
+    /**
+     * Prueba los setters de la clase Favorito.
+     */
     @Test
     void testSetters() {
         // Arrange
@@ -38,6 +48,9 @@ class FavoritoTest {
         assertNotNull(favorito.getMedicamento());
     }
 
+    /**
+     * Prueba los metodos equals, hashCode y toString de la clase Favorito.
+     */
     @Test
     void testEqualsAndHashCodeAndToString() {
         // Arrange
@@ -50,7 +63,6 @@ class FavoritoTest {
 
         Medicamento med1 = new Medicamento();
         med1.setId("med1");
-
         Medicamento med2 = new Medicamento();
         med2.setId("med2");
 
@@ -78,12 +90,10 @@ class FavoritoTest {
         assertNotEquals(f1, f3_otroUsuario, "Favoritos con usuarios diferentes no deben ser iguales");
         assertNotEquals(f1, f4_otroMed, "Favoritos con medicamentos diferentes no deben ser iguales");
         assertNotEquals(f1, f5_otroId, "Favoritos con IDs diferentes no deben ser iguales");
-        //assertNotEquals(f1, null, "Un favorito no debe ser igual a nulo");
-        //assertNotEquals(f1, new Object(), "Un favorito no debe ser igual a un objeto de otro tipo");
 
         // 2. Probar el método hashCode()
         assertEquals(f1.hashCode(), f2.hashCode(), "El hashcode de dos objetos iguales debe ser el mismo");
-        assertNotEquals(f1.hashCode(), f3_otroUsuario.hashCode(), "El hashcode de objetos diferentes debería ser diferente");
+        assertNotEquals(f1.hashCode(), f3_otroUsuario.hashCode(), "El hashcode de objetos diferentes deberia ser diferente");
 
         // 3. Probar el método toString()
         // Simplemente verificamos que no es nulo y que contiene el nombre de la clase

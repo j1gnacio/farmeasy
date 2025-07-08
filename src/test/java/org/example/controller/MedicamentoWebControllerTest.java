@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import org.example.config.SecurityConfig;
-import org.example.config.ViewNames; // <-- Importamos las constantes
+import org.example.config.ViewNames;
 import org.example.model.Medicamento;
 import org.example.security.UserDetailsServiceImpl;
 import org.example.service.FavoritoService;
@@ -28,6 +28,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Pruebas unitarias para el controlador web de medicamentos (MedicamentoWebController).
+ * Verifica la logica de visualizacion del catalogo y los detalles de los medicamentos.
+ */
 @WebMvcTest(MedicamentoWebController.class)
 @Import(SecurityConfig.class)
 class MedicamentoWebControllerTest {
@@ -45,6 +49,9 @@ class MedicamentoWebControllerTest {
 
     private Medicamento medicamento;
 
+    /**
+     * Prepara un objeto Medicamento de prueba antes de cada test.
+     */
     @BeforeEach
     void setUp() {
         medicamento = new Medicamento();
@@ -52,20 +59,28 @@ class MedicamentoWebControllerTest {
         medicamento.setNombre("Test-Med");
     }
 
-    // Este test fue omitido antes, lo añadimos para completar
+    /**
+     * Verifica que al pedir el catalogo sin busqueda se devuelvan todos los medicamentos.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     void cuandoPideCatalogo_sinBusqueda_debeDevolverTodosLosMedicamentos() throws Exception {
         when(medicamentoService.obtenerTodos()).thenReturn(List.of(medicamento));
         when(favoritoService.obtenerIdsMedicamentosFavoritos(any())).thenReturn(Collections.emptySet());
 
-        mockMvc.perform(get(ViewNames.CATALOGO_URL)) // <-- CORREGIDO
+        mockMvc.perform(get(ViewNames.CATALOGO_URL))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.CATALOGO_VIEW)) // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.CATALOGO_VIEW))
                 .andExpect(model().attributeExists("medicamentos"));
 
         verify(medicamentoService).obtenerTodos();
     }
 
+    /**
+     * Verifica que al buscar en el catalogo se llame al servicio de busqueda
+     * y se guarde la busqueda en el historial.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     @WithMockUser(username = "testuser")
     void cuandoPideCatalogo_conBusqueda_debeBuscarPorNombreYGuardarHistorial() throws Exception {
@@ -73,15 +88,20 @@ class MedicamentoWebControllerTest {
         when(medicamentoService.buscarPorNombre(terminoBusqueda)).thenReturn(List.of(medicamento));
         when(favoritoService.obtenerIdsMedicamentosFavoritos("testuser")).thenReturn(Set.of("med1"));
 
-        mockMvc.perform(get(ViewNames.CATALOGO_URL).param("busqueda", terminoBusqueda)) // <-- CORREGIDO
+        mockMvc.perform(get(ViewNames.CATALOGO_URL).param("busqueda", terminoBusqueda))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.CATALOGO_VIEW)) // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.CATALOGO_VIEW))
                 .andExpect(model().attributeExists("busquedaActual", "medicamentos", "favoritosIds"));
 
         verify(medicamentoService).buscarPorNombre(terminoBusqueda);
         verify(historialBusquedaService).guardarBusqueda(terminoBusqueda, "testuser");
     }
 
+    /**
+     * Verifica que la pagina de detalle de un medicamento se muestra correctamente
+     * con un ID valido.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     @WithMockUser(username = "testuser")
     void cuandoPideDetalle_conIdValido_debeDevolverPaginaDeDetalle() throws Exception {
@@ -89,9 +109,9 @@ class MedicamentoWebControllerTest {
         when(medicamentoService.buscarPorNombre("Test-Med")).thenReturn(List.of(medicamento));
         when(favoritoService.esFavorito("testuser", "med1")).thenReturn(true);
 
-        mockMvc.perform(get(ViewNames.MEDICAMENTOS_URL + "/{id}", "med1")) // <-- CORREGIDO
+        mockMvc.perform(get(ViewNames.MEDICAMENTOS_URL + "/{id}", "med1"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.DETALLE_MEDICAMENTO_VIEW)) // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.DETALLE_MEDICAMENTO_VIEW))
                 .andExpect(model().attribute("medicamento", medicamento));
     }
 }

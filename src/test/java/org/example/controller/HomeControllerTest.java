@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import org.example.config.SecurityConfig;
-import org.example.config.ViewNames; // <-- Importamos las constantes
+import org.example.config.ViewNames;
 import org.example.security.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+/**
+ * Pruebas unitarias para el controlador de la pagina de inicio (HomeController).
+ * Verifica que la pagina principal de la aplicacion se carga correctamente.
+ */
 @WebMvcTest(HomeController.class)
 @Import(SecurityConfig.class)
 class HomeControllerTest {
@@ -23,10 +27,14 @@ class HomeControllerTest {
     @MockBean
     private UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * Verifica que la peticion a la raiz del sitio devuelve la vista 'index'.
+     * @throws Exception si ocurre un error durante la peticion.
+     */
     @Test
     void cuandoPideHomePage_debeDevolverVistaIndex() throws Exception {
-        mockMvc.perform(get(ViewNames.ROOT_URL)) // <-- CORREGIDO
+        mockMvc.perform(get(ViewNames.ROOT_URL))
                 .andExpect(status().isOk())
-                .andExpect(view().name(ViewNames.INDEX_VIEW)); // <-- CORREGIDO
+                .andExpect(view().name(ViewNames.INDEX_VIEW));
     }
 }

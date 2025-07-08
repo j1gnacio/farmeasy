@@ -23,6 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Pruebas unitarias para FavoritoService.
+ * Verifica la logica de negocio para agregar, eliminar y consultar favoritos.
+ */
 @ExtendWith(MockitoExtension.class)
 class FavoritoServiceTest {
 
@@ -40,9 +44,11 @@ class FavoritoServiceTest {
     private Medicamento medicamento;
     private Favorito favorito;
 
+    /**
+     * Configuracion inicial para cada prueba.
+     */
     @BeforeEach
     void setUp() {
-        // Preparamos los datos de prueba comunes
         usuario = new Usuario();
         usuario.setId("user123");
         usuario.setUsername("testuser");
@@ -54,138 +60,126 @@ class FavoritoServiceTest {
         favorito = new Favorito(usuario, medicamento);
     }
 
-    // --- Tests para agregarFavorito ---
-
+    /**
+     * Prueba que un favorito se guarda correctamente con datos validos.
+     */
     @Test
     void cuandoAgregaFavorito_conDatosValidos_debeGuardarCorrectamente() {
-        // Arrange
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
         when(medicamentoRepository.findById("med456")).thenReturn(Optional.of(medicamento));
-        when(favoritoRepository.findByUsuarioIdAndMedicamentoId("user123", "med456")).thenReturn(Optional.empty()); // No es favorito aún
+        when(favoritoRepository.findByUsuarioIdAndMedicamentoId("user123", "med456")).thenReturn(Optional.empty());
 
-        // Act
-        // El método no devuelve nada, así que solo lo llamamos. Si lanza una excepción, el test falla.
         assertDoesNotThrow(() -> favoritoService.agregarFavorito("testuser", "med456"));
 
-        // Assert
-        // Verificamos que los métodos de guardado fueron llamados
         verify(favoritoRepository).save(any(Favorito.class));
-        verify(usuarioRepository).save(usuario); // Verifica que se actualiza la lista en el usuario
+        verify(usuarioRepository).save(usuario);
     }
 
+    /**
+     * Prueba que se lanza una excepcion al intentar agregar un favorito que ya existe.
+     */
     @Test
     void cuandoAgregaFavorito_queYaExiste_debeLanzarIllegalStateException() {
-        // Arrange
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
         when(medicamentoRepository.findById("med456")).thenReturn(Optional.of(medicamento));
-        when(favoritoRepository.findByUsuarioIdAndMedicamentoId("user123", "med456")).thenReturn(Optional.of(favorito)); // Ya es favorito
+        when(favoritoRepository.findByUsuarioIdAndMedicamentoId("user123", "med456")).thenReturn(Optional.of(favorito));
 
-        // Act & Assert
         Exception exception = assertThrows(IllegalStateException.class, () -> {
             favoritoService.agregarFavorito("testuser", "med456");
         });
         assertEquals("Este medicamento ya está en tus favoritos.", exception.getMessage());
-        verify(favoritoRepository, never()).save(any(Favorito.class)); // No debe intentar guardar de nuevo
+        verify(favoritoRepository, never()).save(any(Favorito.class));
     }
 
+    /**
+     * Prueba que se lanza una excepcion al agregar un favorito con un usuario que no existe.
+     */
     @Test
     void cuandoAgregaFavorito_conUsuarioInexistente_debeLanzarUsernameNotFoundException() {
-        // Arrange
         when(usuarioRepository.findByUsername("nouser")).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(UsernameNotFoundException.class, () -> {
             favoritoService.agregarFavorito("nouser", "med456");
         });
     }
 
+    /**
+     * Prueba que se lanza una excepcion al agregar un favorito con un medicamento que no existe.
+     */
     @Test
     void cuandoAgregaFavorito_conMedicamentoInexistente_debeLanzarNoSuchElementException() {
-        // Arrange
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
         when(medicamentoRepository.findById("nomed")).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(NoSuchElementException.class, () -> {
             favoritoService.agregarFavorito("testuser", "nomed");
         });
     }
 
-
-    // --- Tests para eliminarFavorito ---
-
+    /**
+     * Prueba la eliminacion de un favorito.
+     */
     @Test
     void cuandoEliminaFavorito_debeLlamarADeleteYSave() {
-        // Arrange
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
 
-        // Act
         favoritoService.eliminarFavorito("testuser", "med456");
 
-        // Assert
         verify(favoritoRepository).deleteByUsuarioIdAndMedicamentoId("user123", "med456");
         verify(usuarioRepository).save(usuario);
     }
 
-
-    // --- Tests para obtenerFavoritosPorUsuario ---
-
+    /**
+     * Prueba que se obtiene la lista correcta de favoritos para un usuario.
+     */
     @Test
     void cuandoObtieneFavoritos_debeDevolverListaCorrecta() {
-        // Arrange
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
         when(favoritoRepository.findByUsuarioId("user123")).thenReturn(List.of(favorito));
 
-        // Act
         List<Favorito> favoritos = favoritoService.obtenerFavoritosPorUsuario("testuser");
 
-        // Assert
         assertFalse(favoritos.isEmpty());
         assertEquals(1, favoritos.size());
         assertEquals("med456", favoritos.get(0).getMedicamento().getId());
     }
 
-
-    // --- Tests para esFavorito ---
-
+    /**
+     * Prueba la verificacion de un favorito existente.
+     */
     @Test
     void cuandoVerificaSiEsFavorito_yExiste_debeDevolverTrue() {
-        // Arrange
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
         when(favoritoRepository.findByUsuarioIdAndMedicamentoId("user123", "med456")).thenReturn(Optional.of(favorito));
 
-        // Act
         boolean resultado = favoritoService.esFavorito("testuser", "med456");
 
-        // Assert
         assertTrue(resultado);
     }
 
+    /**
+     * Prueba la verificacion de un favorito que no existe.
+     */
     @Test
     void cuandoVerificaSiEsFavorito_yNoExiste_debeDevolverFalse() {
-        // Arrange
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
         when(favoritoRepository.findByUsuarioIdAndMedicamentoId("user123", "med456")).thenReturn(Optional.empty());
 
-        // Act
         boolean resultado = favoritoService.esFavorito("testuser", "med456");
 
-        // Assert
         assertFalse(resultado);
     }
 
-    // --- Tests para obtenerIdsMedicamentosFavoritos ---
-
+    /**
+     * Prueba que se obtienen los IDs correctos de los medicamentos favoritos.
+     */
     @Test
     void cuandoObtieneIdsDeFavoritos_debeDevolverSetDeIds() {
-        // Arrange
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
         when(favoritoRepository.findByUsuarioId("user123")).thenReturn(List.of(favorito));
 
-        // Act
         Set<String> ids = favoritoService.obtenerIdsMedicamentosFavoritos("testuser");
 
-        // Assert
         assertNotNull(ids);
         assertEquals(1, ids.size());
         assertTrue(ids.contains("med456"));

@@ -15,6 +15,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Pruebas unitarias para MedicamentoService.
+ * Verifica la logica de negocio para obtener, buscar y guardar medicamentos.
+ */
 @ExtendWith(MockitoExtension.class)
 class MedicamentoServiceTest {
 
@@ -27,9 +31,11 @@ class MedicamentoServiceTest {
     private Medicamento medicamento1;
     private Medicamento medicamento2;
 
+    /**
+     * Prepara datos de prueba antes de cada test.
+     */
     @BeforeEach
     void setUp() {
-        // Preparamos datos de prueba
         medicamento1 = new Medicamento();
         medicamento1.setId("med1");
         medicamento1.setNombre("Paracetamol 500mg");
@@ -39,81 +45,72 @@ class MedicamentoServiceTest {
         medicamento2.setNombre("Ibuprofeno 200mg");
     }
 
-    // --- Test para obtenerTodos ---
+    /**
+     * Prueba que se devuelve una lista de todos los medicamentos.
+     */
     @Test
     void cuandoObtieneTodos_debeDevolverListaDeMedicamentos() {
-        // Arrange (Preparación)
-        // Simulamos que el repositorio devuelve una lista con nuestros dos medicamentos de prueba.
         when(medicamentoRepository.findAll()).thenReturn(List.of(medicamento1, medicamento2));
 
-        // Act (Ejecución)
         List<Medicamento> resultado = medicamentoService.obtenerTodos();
 
-        // Assert (Verificación)
         assertNotNull(resultado);
         assertEquals(2, resultado.size());
         assertEquals("Paracetamol 500mg", resultado.get(0).getNombre());
-        verify(medicamentoRepository).findAll(); // Verificamos que se llamó al método findAll() del repo.
+        verify(medicamentoRepository).findAll();
     }
 
-    // --- Tests para findById ---
+    /**
+     * Prueba que se devuelve un medicamento cuando se busca por un ID existente.
+     */
     @Test
     void cuandoBuscaPorIdExistente_debeDevolverOptionalConMedicamento() {
-        // Arrange
-        // Simulamos que al buscar por "med1", el repositorio encuentra y devuelve nuestro medicamento1.
         when(medicamentoRepository.findById("med1")).thenReturn(Optional.of(medicamento1));
 
-        // Act
         Optional<Medicamento> resultado = medicamentoService.findById("med1");
 
-        // Assert
-        assertTrue(resultado.isPresent()); // Verificamos que el Optional no está vacío.
+        assertTrue(resultado.isPresent());
         assertEquals("Paracetamol 500mg", resultado.get().getNombre());
         verify(medicamentoRepository).findById("med1");
     }
 
+    /**
+     * Prueba que se devuelve un Optional vacio al buscar por un ID inexistente.
+     */
     @Test
     void cuandoBuscaPorIdInexistente_debeDevolverOptionalVacio() {
-        // Arrange
-        // Simulamos que al buscar por un ID que no existe, el repositorio devuelve un Optional vacío.
         when(medicamentoRepository.findById("id_no_existe")).thenReturn(Optional.empty());
 
-        // Act
         Optional<Medicamento> resultado = medicamentoService.findById("id_no_existe");
 
-        // Assert
-        assertFalse(resultado.isPresent()); // Verificamos que el Optional está vacío.
+        assertFalse(resultado.isPresent());
         verify(medicamentoRepository).findById("id_no_existe");
     }
 
-    // --- Test para guardar ---
+    /**
+     * Prueba que un medicamento se guarda correctamente.
+     */
     @Test
     void cuandoGuardaMedicamento_debeDevolverMedicamentoGuardado() {
-        // Arrange
-        // Simulamos que cuando se llama a save con cualquier objeto Medicamento, devuelve ese mismo objeto.
         when(medicamentoRepository.save(any(Medicamento.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
         Medicamento resultado = medicamentoService.guardar(medicamento1);
 
-        // Assert
         assertNotNull(resultado);
         assertEquals("med1", resultado.getId());
         verify(medicamentoRepository).save(medicamento1);
     }
 
-    // --- Test para buscarPorNombre ---
+    /**
+     * Prueba que la busqueda por nombre devuelve una lista de medicamentos coincidentes.
+     */
     @Test
     void cuandoBuscaPorNombre_debeDevolverListaCoincidente() {
-        // Arrange
         String terminoBusqueda = "parace";
-        // Simulamos que al buscar por "parace", el repositorio devuelve una lista que contiene solo a paracetamol.
         when(medicamentoRepository.findByNombreContainingIgnoreCase(terminoBusqueda)).thenReturn(List.of(medicamento1));
 
-        // Act
         List<Medicamento> resultado = medicamentoService.buscarPorNombre(terminoBusqueda);
 
-        // Assert
         assertNotNull(resultado);
         assertEquals(1, resultado.size());
         assertEquals("Paracetamol 500mg", resultado.get(0).getNombre());

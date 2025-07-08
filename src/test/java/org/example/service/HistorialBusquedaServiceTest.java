@@ -20,6 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Pruebas unitarias para HistorialBusquedaService.
+ * Verifica la logica para guardar y obtener el historial de busqueda de los usuarios.
+ */
 @ExtendWith(MockitoExtension.class)
 class HistorialBusquedaServiceTest {
 
@@ -33,6 +37,9 @@ class HistorialBusquedaServiceTest {
 
     private Usuario usuario;
 
+    /**
+     * Prepara un usuario de prueba antes de cada test.
+     */
     @BeforeEach
     void setUp() {
         usuario = new Usuario();
@@ -40,74 +47,70 @@ class HistorialBusquedaServiceTest {
         usuario.setUsername("testuser");
     }
 
-    // --- Tests para guardarBusqueda ---
-
+    /**
+     * Prueba que una busqueda con un termino valido se guarda correctamente.
+     */
     @Test
     void cuandoGuardaBusqueda_conTerminoValido_debeGuardarEnRepositorio() {
-        // Arrange
         String termino = "Aspirina";
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
         when(historialRepository.save(any(HistorialBusqueda.class))).thenReturn(new HistorialBusqueda());
 
-        // Act
         historialService.guardarBusqueda(termino, "testuser");
 
-        // Assert
-        // Verificamos que se llamó al método save del repositorio exactamente una vez.
         verify(historialRepository, times(1)).save(any(HistorialBusqueda.class));
     }
 
+    /**
+     * Prueba que una busqueda con un termino nulo o vacio no se guarda.
+     */
     @Test
     void cuandoGuardaBusqueda_conTerminoNuloOVacio_noDebeGuardar() {
-        // Act
         historialService.guardarBusqueda(null, "testuser");
-        historialService.guardarBusqueda("   ", "testuser"); // Espacios en blanco
+        historialService.guardarBusqueda("   ", "testuser");
 
-        // Assert
-        // Verificamos que el método save NUNCA fue llamado.
         verify(historialRepository, never()).save(any(HistorialBusqueda.class));
     }
 
+    /**
+     * Prueba que se lanza una excepcion al guardar una busqueda para un usuario inexistente.
+     */
     @Test
     void cuandoGuardaBusqueda_conUsuarioInexistente_debeLanzarExcepcion() {
-        // Arrange
         String termino = "Ibuprofeno";
         when(usuarioRepository.findByUsername("nouser")).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(UsernameNotFoundException.class, () -> {
             historialService.guardarBusqueda(termino, "nouser");
         });
     }
 
-    // --- Tests para obtenerHistorialPorUsuario ---
-
+    /**
+     * Prueba que se devuelve la lista de historial para un usuario existente.
+     */
     @Test
     void cuandoObtieneHistorial_conUsuarioExistente_debeDevolverLista() {
-        // Arrange
         HistorialBusqueda busqueda1 = new HistorialBusqueda("Aspirina", usuario);
         HistorialBusqueda busqueda2 = new HistorialBusqueda("Paracetamol", usuario);
         when(usuarioRepository.findByUsername("testuser")).thenReturn(Optional.of(usuario));
-        // Simulamos que el repositorio devuelve una lista de historiales para ese usuario
         when(historialRepository.findByUsuarioId(anyString(), any(Sort.class)))
-                .thenReturn(List.of(busqueda2, busqueda1)); // Simula el orden descendente
+                .thenReturn(List.of(busqueda2, busqueda1));
 
-        // Act
         List<HistorialBusqueda> resultado = historialService.obtenerHistorialPorUsuario("testuser");
 
-        // Assert
         assertNotNull(resultado);
         assertEquals(2, resultado.size());
-        assertEquals("Paracetamol", resultado.get(0).getTerminoBuscado()); // Verifica el orden
+        assertEquals("Paracetamol", resultado.get(0).getTerminoBuscado());
         verify(historialRepository).findByUsuarioId(eq("user123"), any(Sort.class));
     }
 
+    /**
+     * Prueba que se lanza una excepcion al obtener el historial de un usuario inexistente.
+     */
     @Test
     void cuandoObtieneHistorial_conUsuarioInexistente_debeLanzarExcepcion() {
-        // Arrange
         when(usuarioRepository.findByUsername("nouser")).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(UsernameNotFoundException.class, () -> {
             historialService.obtenerHistorialPorUsuario("nouser");
         });
