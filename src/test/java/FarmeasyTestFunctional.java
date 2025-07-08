@@ -1,4 +1,4 @@
-import org.example.model.Usuario;
+import cl.farmeasy.model.Usuario;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
