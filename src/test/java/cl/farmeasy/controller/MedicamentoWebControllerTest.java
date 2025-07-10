@@ -15,16 +15,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -61,24 +57,27 @@ class MedicamentoWebControllerTest {
     }
 
     /**
-     * Verifica que al pedir el catalogo sin busqueda se devuelvan todos los medicamentos.
+     * Verifica que al pedir el catalogo sin busqueda se llame al metodo correcto.
      * @throws Exception si ocurre un error durante la peticion.
      */
     @Test
     void cuandoPideCatalogo_sinBusqueda_debeDevolverTodosLosMedicamentos() throws Exception {
-        when(medicamentoService.obtenerTodos()).thenReturn(List.of(medicamento));
-        when(favoritoService.obtenerIdsMedicamentosFavoritos(any())).thenReturn(Collections.emptySet());
+        // --- CORRECCION AQUI ---
+        // Se simula la llamada al nuevo metodo buscarMedicamentos
+        when(medicamentoService.buscarMedicamentos(null, "TODAS")).thenReturn(List.of(medicamento));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(ViewNames.CATALOGO_URL))
+        mockMvc.perform(get(ViewNames.CATALOGO_URL))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewNames.CATALOGO_VIEW))
                 .andExpect(model().attributeExists("medicamentos"));
 
-        verify(medicamentoService).obtenerTodos();
+        // --- CORRECCION AQUI ---
+        // Se verifica la llamada al nuevo metodo
+        verify(medicamentoService).buscarMedicamentos(null, "TODAS");
     }
 
     /**
-     * Verifica que al buscar en el catalogo se llame al servicio de busqueda
+     * Verifica que al buscar en el catalogo se llame al servicio de busqueda correcto
      * y se guarde la busqueda en el historial.
      * @throws Exception si ocurre un error durante la peticion.
      */
@@ -86,7 +85,9 @@ class MedicamentoWebControllerTest {
     @WithMockUser(username = "testuser")
     void cuandoPideCatalogo_conBusqueda_debeBuscarPorNombreYGuardarHistorial() throws Exception {
         String terminoBusqueda = "Test";
-        when(medicamentoService.buscarPorNombre(terminoBusqueda)).thenReturn(List.of(medicamento));
+        // --- CORRECCION AQUI ---
+        // Se simula la llamada al nuevo metodo buscarMedicamentos
+        when(medicamentoService.buscarMedicamentos(terminoBusqueda, "TODAS")).thenReturn(List.of(medicamento));
         when(favoritoService.obtenerIdsMedicamentosFavoritos("testuser")).thenReturn(Set.of("med1"));
 
         mockMvc.perform(get(ViewNames.CATALOGO_URL).param("busqueda", terminoBusqueda))
@@ -94,7 +95,9 @@ class MedicamentoWebControllerTest {
                 .andExpect(view().name(ViewNames.CATALOGO_VIEW))
                 .andExpect(model().attributeExists("busquedaActual", "medicamentos", "favoritosIds"));
 
-        verify(medicamentoService).buscarPorNombre(terminoBusqueda);
+        // --- CORRECCION AQUI ---
+        // Se verifica la llamada al nuevo metodo
+        verify(medicamentoService).buscarMedicamentos(terminoBusqueda, "TODAS");
         verify(historialBusquedaService).guardarBusqueda(terminoBusqueda, "testuser");
     }
 
@@ -107,7 +110,9 @@ class MedicamentoWebControllerTest {
     @WithMockUser(username = "testuser")
     void cuandoPideDetalle_conIdValido_debeDevolverPaginaDeDetalle() throws Exception {
         when(medicamentoService.findById("med1")).thenReturn(Optional.of(medicamento));
-        when(medicamentoService.buscarPorNombre("Test-Med")).thenReturn(List.of(medicamento));
+        // --- CORRECCION AQUI ---
+        // Se ajusta la llamada al nuevo metodo para la tabla comparativa
+        when(medicamentoService.buscarMedicamentos("Test-Med", "TODAS")).thenReturn(List.of(medicamento));
         when(favoritoService.esFavorito("testuser", "med1")).thenReturn(true);
 
         mockMvc.perform(get(ViewNames.MEDICAMENTOS_URL + "/{id}", "med1"))

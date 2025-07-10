@@ -97,7 +97,7 @@ class UsuarioServiceTest {
             usuarioService.registrarUsuario(usuario);
         });
 
-        assertEquals("El email ya está registrado: test@example.com", exception.getMessage());
+        assertEquals("El email ya esta registrado: test@example.com", exception.getMessage());
         verify(usuarioRepository, never()).save(any(Usuario.class));
     }
 
