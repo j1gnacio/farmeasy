@@ -1,0 +1,8 @@
+cl.farmeasy
+cl.farmeasy.config
+cl.farmeasy.controller
+cl.farmeasy.exception
+cl.farmeasy.model
+cl.farmeasy.repository
+cl.farmeasy.security
+cl.farmeasy.service
