@@ -73,20 +73,10 @@
 
                     <!-- Sección de Imagen -->
                     <a th:if="${medicamento.url_producto}" th:href="${medicamento.url_producto}" target="_blank" class="text-decoration-none">
-                        <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                             th:src="${medicamento.imagen_url}" th:alt="${'Imagen de ' + medicamento.nombre}"
-                             class="card-img-top-custom" />
-                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder">
-                            <i class="bi bi-image"></i>
-                        </div>
+                        <img th:src="@{/images/placeholder.png}" th:alt="${'Imagen de ' + medicamento.nombre}" class="card-img-top-custom" />
                     </a>
                     <div th:unless="${medicamento.url_producto}">
-                        <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                             th:src="${medicamento.imagen_url}" th:alt="${'Imagen de ' + medicamento.nombre}"
-                             class="card-img-top-custom" />
-                        <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}" class="card-img-placeholder">
-                            <i class="bi bi-image"></i>
-                        </div>
+                        <img th:src="@{/images/placeholder.png}" th:alt="${'Imagen de ' + medicamento.nombre}" class="card-img-top-custom" />
                     </div>
 
                     <div class="card-body card-body-custom">

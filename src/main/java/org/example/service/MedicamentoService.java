@@ -32,6 +32,9 @@ public class MedicamentoService {
     }
 
     public Medicamento guardar(Medicamento medicamento) {
+        if (medicamento == null) {
+            throw new NullPointerException("El medicamento no puede ser null");
+        }
         return medicamentoRepository.save(medicamento);
     }
 

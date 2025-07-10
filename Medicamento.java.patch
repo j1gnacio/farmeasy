@@ -1,0 +1,22 @@
+@Id
+    private String id;
+    private String nombre;
+    private Double precioInternet;
+    private Double precioFarmacia;
+    private String descripcion;
+    private String url_producto;
+    private String imagen_url;
+    private String farmacia;
+    private String dosis;
+=======
+public class Medicamento {
+    @Id
+    private final String id;
+    private final String nombre;
+    private final Double precioInternet;
+    private final Double precioFarmacia;
+    private final String descripcion;
+    private final String url_producto;
+    // private String imagen_url; // Eliminada porque no se usa
+    private final String farmacia;
+    private final String dosis;

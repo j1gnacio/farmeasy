@@ -19,9 +19,13 @@ public class Medicamento {
     private Double precioFarmacia;
     private String descripcion;
     private String url_producto;
-    private String imagen_url;
+    // private String imagen_url; // Eliminada porque no se usa
     private String farmacia;
     private String dosis;
+
+    public String getId() {
+        return id;
+    }
 
     public String getDosis() {
         return dosis;

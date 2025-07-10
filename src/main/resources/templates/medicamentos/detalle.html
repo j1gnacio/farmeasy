@@ -14,12 +14,10 @@
         <div class="row">
             <!-- Columna de la imagen -->
             <div class="col-md-5 text-center">
-                <img th:if="${not #strings.isEmpty(medicamento.imagen_url)}"
-                     th:src="${medicamento.imagen_url}"
+                <img th:src="@{/images/placeholder.png}"
                      th:alt="${medicamento.nombre}"
                      class="img-fluid rounded shadow-sm" style="max-height: 400px;"/>
-                <div th:unless="${not #strings.isEmpty(medicamento.imagen_url)}"
-                     class="d-flex align-items-center justify-content-center bg-light rounded shadow-sm"
+                <div class="d-flex align-items-center justify-content-center bg-light rounded shadow-sm"
                      style="height: 400px;">
                     <i class="bi bi-image" style="font-size: 5rem; color: #ccc;"></i>
                 </div>

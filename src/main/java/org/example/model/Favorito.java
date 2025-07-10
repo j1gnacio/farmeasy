@@ -24,4 +24,9 @@ public class Favorito {
         this.usuario = usuario;
         this.medicamento = medicamento;
     }
+
+    // Getter manual para medicamento para evitar error Lombok
+    public Medicamento getMedicamento() {
+        return this.medicamento;
+    }
 }
