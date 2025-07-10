@@ -1,8 +1,3 @@
-import org.example.model.Medicamento;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 /*class SMedicamentoTestUnitary {
 
 
