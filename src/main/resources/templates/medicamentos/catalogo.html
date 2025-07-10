@@ -61,35 +61,38 @@
 
         <!-- Formulario de búsqueda -->
         <form th:action="@{/medicamentos/catalogo}" method="get" class="row g-3 mb-4 align-items-end">
-            <div class="col-sm-12 col-md flex-grow-1">
-                <label for="busqueda" class="form-label visually-hidden">Buscar Medicamento</label>
+            <div class="col-sm-12 col-md-7">
+                <label for="busqueda" class="form-label">Nombre del Medicamento</label>
                 <input type="text" class="form-control form-control-lg" id="busqueda" name="busqueda"
                        placeholder="Buscar por nombre de medicamento..." th:value="${busquedaActual}">
             </div>
-            <div class="col-sm-12 col-md-6">
-                <label for="direccion" class="form-label">Ubicación</label>
-                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese ubicación" />
-                <input type="hidden" id="latitud" name="latitud" th:value="${latitud}" />
-                <input type="hidden" id="longitud" name="longitud" th:value="${longitud}" />
+
+            <div class="col-sm-12 col-md-3">
+                <label for="farmacia" class="form-label">Farmacia</label>
+                <select id="farmacia" name="farmacia" class="form-select form-select-lg">
+                    <option value="TODAS" th:selected="${farmaciaActual == 'TODAS'}">Todas las farmacias</option>
+                    <option th:each="f : ${farmacias}"
+                            th:value="${f}"
+                            th:text="${f}"
+                            th:selected="${f == farmaciaActual}"></option>
+                </select>
             </div>
-            <div class="col-sm-6 col-md-auto">
+
+            <div class="col-sm-12 col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary btn-lg w-100">
                     <i class="bi bi-search"></i> Buscar
                 </button>
-            </div>
-            <div class="col-sm-6 col-md-auto" th:if="${busquedaActual != null and !busquedaActual.isEmpty()}">
-                <a th:href="@{/medicamentos/catalogo}" class="btn btn-outline-secondary btn-lg w-100">Limpiar</a>
             </div>
         </form>
 
         <!-- Mensajes de alerta de búsqueda -->
         <div th:if="${medicamentos != null and #lists.isEmpty(medicamentos) and busquedaActual != null and !busquedaActual.isEmpty()}"
              class="alert alert-warning" role="alert">
-            No se encontraron medicamentos que coincidan con "<strong th:text="${busquedaActual}"></strong>". Intenta con otro término.
+            No se encontraron medicamentos que coincidan con "<strong th:text="${busquedaActual}"></strong>". Intenta con otro termino.
         </div>
         <div th:if="${medicamentos != null and #lists.isEmpty(medicamentos) and (busquedaActual == null or busquedaActual.isEmpty())}"
              class="alert alert-info" role="alert">
-            Actualmente no hay medicamentos disponibles en el catálogo.
+            Actualmente no hay medicamentos disponibles en el catalogo.
         </div>
 
         <!-- Grid de Medicamentos -->
@@ -142,7 +145,7 @@
                             </p>
                             <p class="card-text mb-2" th:if="${medicamento.precioFarmacia != null}">
                                 <span class="fw-bold" th:text="${'$' + #numbers.formatDecimal(medicamento.precioFarmacia, 1, 'POINT', 0, 'COMMA')}"></span>
-                                <small class="text-muted">(Físico)</small>
+                                <small class="text-muted">(Fisico)</small>
                             </p>
 
                             <div class="d-grid gap-2 mt-2">
@@ -163,9 +166,7 @@
                                             <i class="bi bi-star-fill"></i> Quitar de Favoritos
                                         </button>
                                     </form>
-
                                 </div>
-
                                 <a th:if="${medicamento.urlProducto}" th:href="${medicamento.urlProducto}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
                                     Ver en tienda <i class="bi bi-box-arrow-up-right"></i>
                                 </a>

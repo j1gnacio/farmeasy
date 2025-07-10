@@ -35,30 +35,29 @@ public class MedicamentoWebController {
     private HistorialBusquedaService historialBusquedaService;
 
     /**
-     * Muestra el catálogo de medicamentos.
+     * Muestra el catalogo de medicamentos, aplicando filtros de busqueda y farmacia.
      *
      * @param model El modelo para pasar datos a la vista.
-     * @param busqueda El término de búsqueda opcional.
-     * @return La vista del catálogo de medicamentos.
+     * @param busqueda El termino de busqueda opcional por nombre.
+     * @param farmacia La farmacia opcional para filtrar.
+     * @return La vista del catalogo de medicamentos.
      */
     @GetMapping("/catalogo")
     public String mostrarCatalogo(Model model,
-                                  @RequestParam(required = false) String busqueda) {
+                                  @RequestParam(required = false) String busqueda,
+                                  @RequestParam(required = false, defaultValue = "TODAS") String farmacia) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isUserAuthenticated = auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName());
-
         if (busqueda != null && !busqueda.trim().isEmpty() && isUserAuthenticated) {
             historialBusquedaService.guardarBusqueda(busqueda, auth.getName());
         }
 
-        List<Medicamento> medicamentos;
-        if (busqueda != null && !busqueda.isEmpty()) {
-            medicamentos = medicamentoService.buscarPorNombre(busqueda);
-            model.addAttribute("busquedaActual", busqueda);
-        } else {
-            medicamentos = medicamentoService.obtenerTodos();
-        }
+        List<Medicamento> medicamentos = medicamentoService.buscarMedicamentos(busqueda, farmacia);
+
         model.addAttribute("medicamentos", medicamentos);
+        model.addAttribute("busquedaActual", busqueda);
+        model.addAttribute("farmaciaActual", farmacia);
+        model.addAttribute("farmacias", medicamentoService.obtenerNombresDeFarmacias());
 
         if (isUserAuthenticated) {
             Set<String> favoritosIds = favoritoService.obtenerIdsMedicamentosFavoritos(auth.getName());
@@ -70,7 +69,7 @@ public class MedicamentoWebController {
     }
 
     /**
-     * Muestra la página de detalles de un medicamento.
+     * Muestra la pagina de detalles de un medicamento.
      *
      * @param id El ID del medicamento a mostrar.
      * @param model El modelo para pasar datos a la vista.
@@ -82,7 +81,7 @@ public class MedicamentoWebController {
                 .orElseThrow(() -> new RuntimeException("Medicamento no encontrado con ID: " + id));
         model.addAttribute("medicamento", medicamentoPrincipal);
 
-        List<Medicamento> comparativa = medicamentoService.buscarPorNombre(medicamentoPrincipal.getNombre());
+        List<Medicamento> comparativa = medicamentoService.buscarMedicamentos(medicamentoPrincipal.getNombre(), null);
         model.addAttribute("comparativaPrecios", comparativa);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
