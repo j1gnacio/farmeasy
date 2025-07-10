@@ -4,8 +4,10 @@ import cl.farmeasy.exception.RegistroException;
 import cl.farmeasy.repository.UsuarioRepository;
 import cl.farmeasy.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -64,5 +66,29 @@ public class UsuarioService {
         nuevoUsuario.setEnabled(true);
 
         return usuarioRepository.save(nuevoUsuario);
+    }
+
+    /**
+     * Cambia la contrasena de un usuario existente.
+     *
+     * @param username El nombre del usuario que cambia su contrasena.
+     * @param oldPassword La contrasena actual para verificacion.
+     * @param newPassword La nueva contrasena a establecer.
+     * @throws RegistroException si la contrasena antigua no es correcta.
+     */
+    @Transactional
+    public void cambiarPassword(String username, String oldPassword, String newPassword) {
+        // Buscamos al usuario por su nombre de usuario
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+
+        // Verificamos que la contrasena antigua coincida
+        if (!passwordEncoder.matches(oldPassword, usuario.getPassword())) {
+            throw new RegistroException("La contrasena actual es incorrecta.");
+        }
+
+        // Codificamos y establecemos la nueva contrasena
+        usuario.setPassword(passwordEncoder.encode(newPassword));
+        usuarioRepository.save(usuario);
     }
 }

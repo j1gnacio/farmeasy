@@ -71,6 +71,7 @@ public class SecurityConfig {
                                 ViewNames.LOGOUT_URL,
                                 ViewNames.MEDICAMENTOS_URL + "/**"
                         ).permitAll()
+                        .requestMatchers("/perfil/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
